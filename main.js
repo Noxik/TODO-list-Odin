@@ -1,5 +1,5 @@
 let todoList = []
-
+document.getElementById("all").addEventListener("click", () => {addToMainBtnProject(todoList)})
 class Task {
     constructor(project, title, description, dueDate, priority) {
         this.project = project;
@@ -19,26 +19,26 @@ let e = document.getElementById("prio").value
 }
 
 
-// need to apply todoList here to work correctly
-function addToMain(taskList) {
+// Add last item from todoList to main
+function addToMain() { 
     let div = document.createElement("div");
 
-    for (let key in  taskList[taskList.length-1]) {    
+    for (let key in todoList[todoList.length-1]) {    
     // without project name
     if (key !== "project") {   
         let span = document.createElement("span");
-    //    console.log(key, [key], [key].toString())
-    span.textContent = taskList[taskList.length-1][key]
+    //   console.log(key, [key], [key].toString())
+    span.textContent = todoList[todoList.length-1][key]
     div.appendChild(span)
     }
     }
-   return document.querySelector("main").appendChild(div)
+ return document.querySelector("main").appendChild(div)
 }
 
 document.getElementById("submit").addEventListener("click", () => {
     addNewTask();
-    abcd();
-    addToMain(todoList);
+    createAsideBtn();
+    addToMain();
     addEventsToAsideButtons()})
 
 document.querySelector("button").addEventListener("click", () => {
@@ -69,7 +69,7 @@ function newTextTag(tag, text) {
         }
 
 // add to aside buttons from object project names :)
-function abcd() {
+function createAsideBtn() {
             // clean project box before add new projects
             document.querySelector("#projectsListing").textContent = ""
     let projectNames = []
@@ -89,15 +89,89 @@ function abcd() {
 function addEventsToAsideButtons() {
     let proBtn = document.querySelectorAll(".projectBtn")
     for (let i=0; i<proBtn.length; i++) {
-        proBtn[i].addEventListener("click", function(e) {console.log(proBtn[i].textContent)})}
+        proBtn[i].addEventListener("click", function() {
+    //       console.log(proBtn[i].textContent);
+            let test = todoList.filter(function(e) {
+                if (e.project === proBtn[i].textContent) 
+                {return true}
+                    })
+    //    console.log(test);
+        addToMainBtnProject(test)
+                }
+            )
+        }
 }
+
+//function which add choosen project after click button to main section - only task in project with the same name as button
+function addToMainBtnProject(projectButton) { 
+// clean main
+    document.querySelector("main").textContent= ""
+
+    projectButton.forEach((project) => {
+        let div = document.createElement("div");
+            for (let key in project) {
+                if (key !== "project") {
+    //        console.log(project[key]);
+            let span = document.createElement("span");
+            span.textContent = project[key]
+            div.appendChild(span)
+            }}
+    return document.querySelector("main").appendChild(div)})
+}
+
+/* let test = (function start() {
+    document.getElementById("all").addEventListener("click", addToMainBtnProject(todoList))
+})() */
 
 // create filtered arr if project name is equal to sth
 const arx = todoList.filter(function(key) {if (key.project === projects[1]) {return true}})
 
 
-// NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON KLIK with filter!:)
+// DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON KLIK with filter!:)
+// NEED to add test project to options
+// Need to add in submit new task check if project name is the same as clicked becasue without that it will show new task to many project which is actuall in main section
 // CONSIDER TO ADD PROJECT BUTTON AFTER ADDING NEW PROJECT TO NAVBAR
+
+// TEST Projects
+const x = (function testing() {
+    console.log(todoList)
+        todoList.push(new Task("x","a","b",1,"low"))
+        createAsideBtn();
+        addToMain();
+        addEventsToAsideButtons()
+    })()
+
+    const xx= (function testing() {
+        console.log(todoList)
+            todoList.push(new Task("x","d","e",2,"mid"))
+            createAsideBtn();
+            addToMain();
+            addEventsToAsideButtons()
+        })()
+        
+        const xxx= (function testing() {
+            console.log(todoList)
+                todoList.push(new Task("x","f","g",3,"mid"))
+                createAsideBtn();
+                addToMain();
+                addEventsToAsideButtons()
+            })()
+
+        const y = (function testing() {
+            console.log(todoList)
+                todoList.push(new Task("y","a","b",1,"mid"))
+                createAsideBtn();
+                addToMain();
+                addEventsToAsideButtons()
+            })()
+            
+            const yy = (function testing() {
+                console.log(todoList)
+                    todoList.push(new Task("y","c","d",2,"high"))
+                    createAsideBtn();
+                    addToMain();
+                    addEventsToAsideButtons()
+                })()
 
 /* FIRST function, but i added argument to it because then i can use it to show to do for filtered projects
 function addToMain() {
