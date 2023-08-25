@@ -1,5 +1,12 @@
 let todoList = []
-document.getElementById("all").addEventListener("click", () => {addToMainBtnProject(todoList)})
+document.getElementById("all").addEventListener("click", () => {
+    document.querySelector("main").textContent= ""
+    let main = document.querySelector("main")
+    let p = document.createElement("p")
+    p.textContent = document.getElementById("all").textContent
+    main.appendChild(p)
+    addToMainBtnProject(todoList)}
+    )
 class Task {
     constructor(project, title, description, dueDate, priority) {
         this.project = project;
@@ -90,13 +97,23 @@ function addEventsToAsideButtons() {
     let proBtn = document.querySelectorAll(".projectBtn")
     for (let i=0; i<proBtn.length; i++) {
         proBtn[i].addEventListener("click", function() {
-    //       console.log(proBtn[i].textContent);
+        //   console.log(proBtn[i]);
             let test = todoList.filter(function(e) {
                 if (e.project === proBtn[i].textContent) 
                 {return true}
                     })
-    //    console.log(test);
+   //   console.log(test[0].project);
+       
+       document.querySelector("main").textContent= ""
+       let main = document.querySelector("main")
+       let p = document.createElement("p")
+       p.textContent = test[0].project
+       main.appendChild(p)
+
+
         addToMainBtnProject(test)
+
+      
                 }
             )
         }
@@ -105,8 +122,7 @@ function addEventsToAsideButtons() {
 //function which add choosen project after click button to main section - only task in project with the same name as button
 function addToMainBtnProject(projectButton) { 
 // clean main
-    document.querySelector("main").textContent= ""
-
+ //   document.querySelector("main").textContent= ""
     projectButton.forEach((project) => {
         let div = document.createElement("div");
             for (let key in project) {
