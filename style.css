@@ -41,7 +41,7 @@ main div {
     margin-top: 0.33rem;
     width: 80%;
     display: grid;
-    grid-template-columns: 1fr auto auto auto;
+    grid-template-columns: 1fr auto auto auto auto;
     gap: 0.5rem;
     padding: 0.5rem 2rem;
     border-radius: 0.5rem;
@@ -85,3 +85,6 @@ button:hover {
     left: 50%;
 }
 
+input[type=checkbox] {
+cursor:pointer
+}
