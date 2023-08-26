@@ -4,3 +4,4 @@ In this project i learned:
 2) how to get access to that data and use it to display on screen
 3) how can i filter data from arrays and objects (to display specified data on webpage)
 4) practise more how to use functions with argument
+5) practise more how to find correct object in array using findIndex (on project names) and boolean (on project titles)
