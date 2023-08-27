@@ -1,16 +1,26 @@
 // DOM:
 // buttons
 const allTaskBtn = document.getElementById("all")
-const addProjectBtn = document.getElementById("addPro")
-const addNewProject = document.getElementById("newNameSubmit")
-const addNewTaskBtn = document.getElementById("submit")
+const addNewProjectBtn = document.getElementById("addPro")
+const addNewTaskBtn = document.getElementById("addTask")
+const submitNewProject = document.getElementById("newNameSubmit")
+const submitNewTaskBtn = document.getElementById("submit")
 
 // divs
 const main = document.querySelector("main")
 const newProjectModal = document.getElementById("newProjectModal")
+const newTaskModal = document.getElementById("newTaskModal")
 const newProjectNameInput = document.getElementById("newProjectName")
 const selectProject = document.getElementById("project")
 const asideProjectListing = document.querySelector("#projectsListing")
+
+addNewProjectBtn.addEventListener("click", () => {
+    newProjectModal.style.display = "block"
+})
+addNewTaskBtn.addEventListener("click", () => {
+    newTaskModal.style.display = "block";
+})
+
 
 let todoList = []
 
@@ -52,17 +62,23 @@ function switchDone() {
     }
 }
 
-addNewTaskBtn.addEventListener("click", () => {
+submitNewTaskBtn.addEventListener("click", () => {
     addNewTask();
     createAsideBtn();
     addToMain(todoList[todoList.length-1]);
-    addEventsToAsideButtons()})
-
-addProjectBtn.addEventListener("click", () => {
-    newProjectModal.style.display = "block"
+    addEventsToAsideButtons()
+     //cleaning all inputs
+     let modal = document.getElementById("newTaskModal")
+     let inputs = modal.querySelectorAll("input")
+     for (let input in inputs) {inputs[input].value = ""}
+     newTaskModal.style.display = "none"
 })
 
-addNewProject.addEventListener("click", () => {
+addNewProjectBtn.addEventListener("click", () => {
+    newProjectModal.style.display = "grid"
+})
+
+submitNewProject.addEventListener("click", () => {
     let option = document.createElement("option");
     option.value = newProjectNameInput.value
     option.textContent = newProjectNameInput.value
@@ -72,7 +88,7 @@ addNewProject.addEventListener("click", () => {
     //cleaning inputs
     newProjectNameInput.value = ""
     newProjectModal.style.display = "none"
-   
+    createAsideBtn()
 })
 
 function addNewHtmlTag(tag, text) {
@@ -152,50 +168,47 @@ function addToMain(xxx) {
     return main.appendChild(div)
     }
 
-//function which add choosen project after click button to main section - only task in project with the same name as button
-function addToMainBtnProject(projectButton) { 
-    projectButton.forEach((project) => {
-        let div = document.createElement("div");
-        let p = document.createElement("p")
-            for (let key in project) {
-                 if (key === "project") {
-                    p.textContent = project[key]
-                    p.style.display = "none";
-                    div.appendChild(p)
-                } else if 
-                 (key !== "project" && key !== "done") {
-        //    console.log(project[key]);
-            let p = document.createElement("p");
-            p.textContent = project[key]
-            div.appendChild(p)
-            } else if (key === "done") {
-                let input = document.createElement("input");
-                input.setAttribute("type", "checkbox");
-                if (project[key] === "yes") {
-                    input.checked = true
-                } else {
-                    input.checked = false
-                }
-             
-                div.appendChild(input)
-                input.addEventListener("click", switchDone)
-                
-            }}
-    return main.appendChild(div)})
-}
-
 allTaskBtn.addEventListener("click", () => {
     main.textContent= ""
     let p = document.createElement("p")
     p.textContent = allTaskBtn.textContent
     main.appendChild(p)
-    addToMainBtnProject(todoList)}
-    )
-
+    todoList.forEach((project) => addToMain(project))})
+    
+// TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
-// NEED to add test project to options
+// DONE: to add test project to options
 // Need to add in submit new task check if project name is the same as clicked because without that it will show new task to many project which is actual in main section
 // CONSIDER TO ADD PROJECT BUTTON AFTER ADDING NEW PROJECT TO NAVBAR
+// add check if project already exist
+// add dark mode switch function
+// add button to addproject in newtask modal
+// change description to textarea and update cleaning function
+
+//Darkmode switch
+document.getElementById("darkmode").addEventListener("click", () => {
+    if (document.getElementById("darkmode").checked === true) {
+      
+      //background + font
+      document.querySelector("body").style = "background-color: #1c2225; color: #FFFFFF";
+      
+      //buttons
+        for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
+          document.querySelectorAll(".btn")[i].style = "background-color: #46424f; color: #FFFFFF"
+          }
+  
+    } else {
+    //RETURN TO DEFAULT
+      //background + font
+      document.querySelector("body").style = "background-color: #5bcaf5; color: #000"
+     
+      //buttons
+     for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
+      document.querySelectorAll(".btn")[i].style = "background-color: #ffea8c; color: #000"
+      }
+    }
+  })
+
 
 // TEST Projects
 const x = (function testing() {
@@ -207,8 +220,8 @@ const x = (function testing() {
     })()
 
 function addOptionToSelect(xxx) {
-    console.log(xxx)
-    console.log(todoList)
+//    console.log(xxx)
+//    console.log(todoList)
 //    if (todoList.some(e => e.project === xxx)) {console.log("is already")} else {
     let option = document.createElement("option");
     option.value = xxx

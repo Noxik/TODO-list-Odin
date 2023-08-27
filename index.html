@@ -9,35 +9,53 @@
 </head>
 <div class="container">
     <header>
-        <label for="project">Project</label>
-            <select name="project" id="project">
-            <option value="default">All tasks</option>  
-            </select>
-            <button id="addPro">Add Project</button>
-
-        <label for="title">Title</label><input type="text" id="title">
-        <label for="desc">Description</label><input type="text" id="desc">
-        <label for="date">Due Date </label><input type="date" name="date" id="date">
-        <label for="prio">Priority</label>
-            <select name="prio" id="prio">
-                <option value="low">Low</option>    
-                <option value="mid">Mid</option>    
-                <option value="high">High</option>    
-            </select>
-        <button type="submit" id="submit">Add New Task!</button>
-        <div id="newProjectModal">
-            <label for="newProjectName">Project Name</label><input type="text" id="newProjectName">
-            <button type="submit" id="newNameSubmit">Add New Project</button>
+        <p>TO DO LIST</p>
+        <div class="switch">
+            <p>dark mode switch</p>
+            <input type="checkbox" id="darkmode">
+            <label id="darklabel" for="darkmode"></label>
         </div>
+        <p>Pjoter 2023</p>
     </header>
     <aside>
         <button id="all">All Tasks</button>
-        <p>Projects</p>
+        <p>Projects:</p>
         <div id="projectsListing"></div>
     </aside>
     <main>
-        <p>All Tasks</p>
+        <p>All Tasks</p>    
     </main>
+    <aside id="adding">
+        <button id="addTask">Add New Task</button>
+        <button id="addPro">Add New Project</button>
+            <div id="newProjectModal">
+                <label for="newProjectName">Project Name:</label><input type="text" id="newProjectName">
+                <button type="submit" id="newNameSubmit">Add Project</button>
+            </div>
+    </aside>
+    <div id="newTaskModal">
+        <div id="myForm">
+            <div id="firstrow">
+                <label for="project">Project</label>
+                <select name="project" id="project">
+                </select>
+            </div> 
+            <div>
+                <label for="title">Title</label><input type="text" id="title">
+                <label for="desc">Description</label><input type="text" id="desc">
+            </div>
+            <div>
+                <label for="date">Due Date </label><input type="date" name="date" id="date">
+                <label for="prio">Priority</label>
+                    <select name="prio" id="prio">
+                        <option value="low">Low</option>    
+                        <option value="mid">Mid</option>    
+                        <option value="high">High</option>    
+                    </select>
+                <button type="submit" id="submit">Add New Task!</button>
+            </div>
+        </div>
+    </div> 
 </div>
 <body>
     
