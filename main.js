@@ -21,10 +21,9 @@ class Task {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.done = done
+        this.done = done}
     }
-}
-//
+
 function addNewTask() {
 let a = document.getElementById("project").value  
 let b = document.getElementById("title").value
@@ -34,37 +33,8 @@ let e = document.getElementById("prio").value
     todoList.push(new Task(a,b,c,d,e, "no"))
 }
 
-// Add last item from todoList to main
-function addToMain() { 
-    let div = document.createElement("div");
-let p = document.createElement("p");
-    for (let key in todoList[todoList.length-1]) {    
-    // without project name
-    if (key === "project") {
-        let p = document.createElement("p")
-p.textContent = todoList[todoList.length-1][key]
-p.style.display = "none";
-div.appendChild(p)
-    }
-    else if (key !== "project" && key !== "done") {   
-    let p = document.createElement("p");
-    //   console.log(key, [key], [key].toString())
-    p.textContent = todoList[todoList.length-1][key]
-    div.appendChild(p)
-    } else if (key === "done") {
-        let input = document.createElement("input");
-        input.setAttribute("type", "checkbox");
-     //   input.checked = true
-        div.appendChild(input)
-        input.addEventListener("click", switchDone)
-                    }
-    }
- return main.appendChild(div)
-}
-
 function switchDone() {
-    console.log(this.parentNode.childNodes[0].textContent, this.parentNode.childNodes[1].textContent);
-    
+//    console.log(this.parentNode.childNodes[0].textContent, this.parentNode.childNodes[1].textContent);    
     let projectFromNode = this.parentNode.childNodes[0].textContent;
     let taskTitleFromNode = this.parentNode.childNodes[1].textContent;
     const indexInToDoList = todoList.findIndex(key => {
@@ -85,7 +55,7 @@ function switchDone() {
 addNewTaskBtn.addEventListener("click", () => {
     addNewTask();
     createAsideBtn();
-    addToMain();
+    addToMain(todoList[todoList.length-1]);
     addEventsToAsideButtons()})
 
 addProjectBtn.addEventListener("click", () => {
@@ -105,20 +75,18 @@ addNewProject.addEventListener("click", () => {
    
 })
 
-function newTextTag(tag, text) {
+function addNewHtmlTag(tag, text) {
     let element = document.createElement(tag);
     element.textContent = text;
-
     element.classList.add("projectBtn")  // addClass
-    element.setAttribute("id", `asiBtn_${text}`);        // addId
 
     return asideProjectListing.appendChild(element)
         }
 
 // add to aside buttons from object project names :)
 function createAsideBtn() {
-            // clean project box before add new projects
-            asideProjectListing.textContent = ""
+    // clean project box before add new projects
+    asideProjectListing.textContent = ""
     let _projectNames = []
     for (let key in todoList) {
     // check if already project exist in projectNames arr
@@ -128,7 +96,7 @@ function createAsideBtn() {
     
     // if not button will appear
     _projectNames.forEach((name) => {    
-    newTextTag("button", name);
+    addNewHtmlTag("button", name);
     })
  }
 
@@ -149,26 +117,69 @@ function addEventsToAsideButtons() {
        p.textContent = _filteredTodos[0].project
        main.appendChild(p)
 
-        addToMainBtnProject(_filteredTodos)     
+        _filteredTodos.forEach((project) => addToMain(project))
                 }
             )
         }
 }
 
+function addToMain(xxx) { 
+    let div = document.createElement("div");
+    let p = document.createElement("p");
+        for (let key in xxx) {    
+            if (key === "project") {
+            p.textContent = xxx[key]
+            p.style.display = "none";
+            div.appendChild(p)
+        } else if (key !== "project" && key !== "done") {   
+            let p = document.createElement("p");
+    //   console.log(key, [key], [key].toString())
+            p.textContent = xxx[key]
+            div.appendChild(p)
+        } else if (key === "done") {
+    //    console.log(lastAddedTask[key])
+        let input = document.createElement("input");
+        input.setAttribute("type", "checkbox");
+    
+            if (xxx[key] === "yes") {
+                input.checked = true
+            } else {
+                input.checked = false
+            }
+        div.appendChild(input)
+        input.addEventListener("click", switchDone)}
+        }
+    return main.appendChild(div)
+    }
+
 //function which add choosen project after click button to main section - only task in project with the same name as button
 function addToMainBtnProject(projectButton) { 
-// clean main
- //   document.querySelector("main").textContent= ""
     projectButton.forEach((project) => {
         let div = document.createElement("div");
+        let p = document.createElement("p")
             for (let key in project) {
-                if (key !== "project" && key !== "done") {
-       //     console.log(project[key]);
+                 if (key === "project") {
+                    p.textContent = project[key]
+                    p.style.display = "none";
+                    div.appendChild(p)
+                } else if 
+                 (key !== "project" && key !== "done") {
+        //    console.log(project[key]);
             let p = document.createElement("p");
             p.textContent = project[key]
             div.appendChild(p)
             } else if (key === "done") {
-// console.log(1)
+                let input = document.createElement("input");
+                input.setAttribute("type", "checkbox");
+                if (project[key] === "yes") {
+                    input.checked = true
+                } else {
+                    input.checked = false
+                }
+             
+                div.appendChild(input)
+                input.addEventListener("click", switchDone)
+                
             }}
     return main.appendChild(div)})
 }
@@ -181,79 +192,57 @@ allTaskBtn.addEventListener("click", () => {
     addToMainBtnProject(todoList)}
     )
 
-
-// done/undone task after click checkbox button
-/* function checkbox(){
-    checkboxes.forEach((e) => (e.addEventListener("click", () => {
-        console.log(e.parentNode)})))
-    }
-*/
-
-// DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON KLIK with filter!:)
+// DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
 // NEED to add test project to options
-// Need to add in submit new task check if project name is the same as clicked becasue without that it will show new task to many project which is actuall in main section
+// Need to add in submit new task check if project name is the same as clicked because without that it will show new task to many project which is actual in main section
 // CONSIDER TO ADD PROJECT BUTTON AFTER ADDING NEW PROJECT TO NAVBAR
 
 // TEST Projects
 const x = (function testing() {
-    console.log(todoList)
-        todoList.push(new Task("x","a","b",1,"low","no"))
+        todoList.push(new Task("x","x1","b",1,"low","no"))
         createAsideBtn();
-        addToMain();
+        addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons()
+        addOptionToSelect(todoList[todoList.length-1].project)
     })()
 
-    const xx= (function testing() {
-        console.log(todoList)
-            todoList.push(new Task("x","d","e",2,"mid","no"))
-            createAsideBtn();
-            addToMain();
-            addEventsToAsideButtons()
-        })()
+function addOptionToSelect(xxx) {
+    console.log(xxx)
+    console.log(todoList)
+//    if (todoList.some(e => e.project === xxx)) {console.log("is already")} else {
+    let option = document.createElement("option");
+    option.value = xxx
+    option.textContent = xxx
+   // new option will be selected as default
+    option.selected = true;
+    selectProject.appendChild(option)}
+// }
+
+const xx= (function testing() {
+        todoList.push(new Task("x","x2","e",2,"mid","no"))
+        createAsideBtn();
+        addToMain(todoList[todoList.length-1]);
+        addEventsToAsideButtons()
+    })()
         
-        const xxx= (function testing() {
-            console.log(todoList)
-                todoList.push(new Task("x","f","g",3,"mid","no"))
-                createAsideBtn();
-                addToMain();
-                addEventsToAsideButtons()
-            })()
+const xxx= (function testing() {
+        todoList.push(new Task("x","x3","g",3,"mid","no"))
+        createAsideBtn();
+        addToMain(todoList[todoList.length-1]);
+        addEventsToAsideButtons()
+        })()
 
-        const y = (function testing() {
-            console.log(todoList)
-                todoList.push(new Task("y","a","b",1,"mid","no"))
-                createAsideBtn();
-                addToMain();
-                addEventsToAsideButtons()
-            })()
+const y = (function testing() {
+        todoList.push(new Task("y","y1","b",1,"mid","no"))
+        createAsideBtn();
+        addToMain(todoList[todoList.length-1]);
+        addEventsToAsideButtons();
+        addOptionToSelect(todoList[todoList.length-1].project)
+        })()
             
-            const yy = (function testing() {
-                console.log(todoList)
-                    todoList.push(new Task("y","c","d",2,"high","no"))
-                    createAsideBtn();
-                    addToMain();
-                    addEventsToAsideButtons()
-                })()
-
- /*   const abc = (function start() {
-        let checkboxes = document.querySelectorAll("input[type=checkbox]")
-        checkboxes.forEach((e) => (e.addEventListener("click", () => {
-        console.log(e.parentNode)})))
-                    })()
-    
-/* FIRST function, but i added argument to it because then i can use it to show to do for filtered projects
-function addToMain() {
-    let div = document.createElement("div");
-
-    for (let key in  todoList[todoList.length-1]) {    
-    // without project name
-    if (key !== "project") {   
-        let p = document.createElement("p");
-        console.log(key, [key], [key].toString())
-    p.textContent = todoList[todoList.length-1][key]
-    div.appendChild(p)
-    }
-    }
-   return document.querySelector("main").appendChild(div)
-}
-*/
+const yy = (function testing() {
+        todoList.push(new Task("y","y2","d",2,"high","no"))
+        createAsideBtn();
+        addToMain(todoList[todoList.length-1]);
+        addEventsToAsideButtons()        
+        })()
