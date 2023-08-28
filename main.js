@@ -1,24 +1,26 @@
 // DOM:
 // buttons
 const allTaskBtn = document.getElementById("all")
-const addNewProjectBtn = document.getElementById("addPro")
 const addNewTaskBtn = document.getElementById("addTask")
 const submitNewProject = document.getElementById("newNameSubmit")
 const submitNewTaskBtn = document.getElementById("submit")
 
 // divs
-const main = document.querySelector("main")
-const newProjectModal = document.getElementById("newProjectModal")
+const main = document.querySelector("#mainChangeContent")
 const newTaskModal = document.getElementById("newTaskModal")
 const newProjectNameInput = document.getElementById("newProjectName")
 const selectProject = document.getElementById("project")
 const asideProjectListing = document.querySelector("#projectsListing")
+let projectNameHeading = document.getElementById("actualProject")
 
-addNewProjectBtn.addEventListener("click", () => {
-    newProjectModal.style.display = "block"
-})
 addNewTaskBtn.addEventListener("click", () => {
     newTaskModal.style.display = "block";
+})
+
+/* Form closing after button X click */
+document.getElementById("formCloseBtn").addEventListener("click", () => {
+    cleaningModalInputs();
+    newTaskModal.style.display = "none"
 })
 
 
@@ -66,17 +68,16 @@ submitNewTaskBtn.addEventListener("click", () => {
     addNewTask();
     createAsideBtn();
     addToMain(todoList[todoList.length-1]);
-    addEventsToAsideButtons()
-     //cleaning all inputs
-     let modal = document.getElementById("newTaskModal")
-     let inputs = modal.querySelectorAll("input")
-     for (let input in inputs) {inputs[input].value = ""}
-     newTaskModal.style.display = "none"
+    addEventsToAsideButtons();
+    cleaningModalInputs();
+    newTaskModal.style.display = "none"
 })
 
-addNewProjectBtn.addEventListener("click", () => {
-    newProjectModal.style.display = "grid"
-})
+function cleaningModalInputs() {
+    let modal = document.getElementById("newTaskModal")
+    let inputs = modal.querySelectorAll("input")
+    for (let input in inputs) {inputs[input].value = ""}
+}
 
 submitNewProject.addEventListener("click", () => {
     let option = document.createElement("option");
@@ -86,8 +87,7 @@ submitNewProject.addEventListener("click", () => {
     option.selected = true;
     selectProject.appendChild(option)
     //cleaning inputs
-    newProjectNameInput.value = ""
-    newProjectModal.style.display = "none"
+    // newProjectNameInput.value = ""
     createAsideBtn()
 })
 
@@ -95,7 +95,6 @@ function addNewHtmlTag(tag, text) {
     let element = document.createElement(tag);
     element.textContent = text;
     element.classList.add("projectBtn")  // addClass
-
     return asideProjectListing.appendChild(element)
         }
 
@@ -127,11 +126,8 @@ function addEventsToAsideButtons() {
                 {return true}
                     })
    //   console.log(test[0].project); 
-   document.querySelector("main").textContent= ""
-       let main = document.querySelector("main")
-       let p = document.createElement("p")
-       p.textContent = _filteredTodos[0].project
-       main.appendChild(p)
+    document.querySelector("#mainChangeContent").textContent= ""
+    projectNameHeading.textContent = _filteredTodos[0].project
 
         _filteredTodos.forEach((project) => addToMain(project))
                 }
@@ -164,17 +160,35 @@ function addToMain(xxx) {
             }
         div.appendChild(input)
         input.addEventListener("click", switchDone)}
+
+        if (xxx[key] === "low") {
+           div.style.backgroundColor = "#a0cbf1"
+        } else if (xxx[key] === "mid") {
+            div.style.backgroundColor = "#53aefd"
+        } else if (xxx[key] === "high") {
+            div.style.backgroundColor = "#3598ef"
+        }
+
         }
     return main.appendChild(div)
     }
 
 allTaskBtn.addEventListener("click", () => {
     main.textContent= ""
-    let p = document.createElement("p")
-    p.textContent = allTaskBtn.textContent
-    main.appendChild(p)
+    projectNameHeading.textContent = allTaskBtn.textContent
     todoList.forEach((project) => addToMain(project))})
     
+function fakeAsideProjectAddBtn() {
+        todoList.push(new Task("test",1,1,1,1, "no"))
+        let option = document.createElement("option");
+        option.value = "test"
+        option.textContent = "test"
+        selectProject.appendChild(option)
+        createAsideBtn();
+        addEventsToAsideButtons()
+        todoList.pop()
+}
+
 // TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
 // DONE: to add test project to options
@@ -182,26 +196,24 @@ allTaskBtn.addEventListener("click", () => {
 // CONSIDER TO ADD PROJECT BUTTON AFTER ADDING NEW PROJECT TO NAVBAR
 // add check if project already exist
 // add dark mode switch function
-// add button to addproject in newtask modal
+// DONE: add button to add project in new task modal
 // change description to textarea and update cleaning function
+// DONE add button in task modal to delete project
+// validation if project exist already
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", () => {
-    if (document.getElementById("darkmode").checked === true) {
-      
+    if (document.getElementById("darkmode").checked === true) {    
       //background + font
-      document.querySelector("body").style = "background-color: #1c2225; color: #FFFFFF";
-      
+      document.querySelector("body").style = "background-color: #1c2225; color: #FFFFFF";     
       //buttons
         for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
           document.querySelectorAll(".btn")[i].style = "background-color: #46424f; color: #FFFFFF"
           }
-  
     } else {
     //RETURN TO DEFAULT
       //background + font
-      document.querySelector("body").style = "background-color: #5bcaf5; color: #000"
-     
+      document.querySelector("body").style = "background-color: #5bcaf5; color: #000"     
       //buttons
      for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
       document.querySelectorAll(".btn")[i].style = "background-color: #ffea8c; color: #000"
@@ -212,7 +224,7 @@ document.getElementById("darkmode").addEventListener("click", () => {
 
 // TEST Projects
 const x = (function testing() {
-        todoList.push(new Task("x","x1","b",1,"low","no"))
+        todoList.push(new Task("Project test 1","x1","b",1,"low","no"))
         createAsideBtn();
         addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons()
@@ -232,21 +244,21 @@ function addOptionToSelect(xxx) {
 // }
 
 const xx= (function testing() {
-        todoList.push(new Task("x","x2","e",2,"mid","no"))
+        todoList.push(new Task("Project test 1","x2","e",2,"mid","no"))
         createAsideBtn();
         addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons()
     })()
         
 const xxx= (function testing() {
-        todoList.push(new Task("x","x3","g",3,"mid","no"))
+        todoList.push(new Task("Project test 1","x3","g",3,"mid","no"))
         createAsideBtn();
         addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons()
         })()
 
 const y = (function testing() {
-        todoList.push(new Task("y","y1","b",1,"mid","no"))
+        todoList.push(new Task("Project test 2","y1","b",1,"mid","no"))
         createAsideBtn();
         addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons();
@@ -254,7 +266,7 @@ const y = (function testing() {
         })()
             
 const yy = (function testing() {
-        todoList.push(new Task("y","y2","d",2,"high","no"))
+        todoList.push(new Task("Project test 2","y2","d",2,"high","no"))
         createAsideBtn();
         addToMain(todoList[todoList.length-1]);
         addEventsToAsideButtons()        

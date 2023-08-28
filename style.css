@@ -8,27 +8,28 @@
 
 #myForm {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr auto
 }
 
-#myForm div {
+#formgrid {
+    display: grid;
+    gap: 0.5rem
+}
+
+#actualProject {
+    font-size: 2rem
+}
+
+#first-row {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    place-self: stretch;
+    align-items: center;
 }
-
-#firstrow {
-    grid-column: 1/3;
-}
-
-#desc {
-    height: 3rem;
-}
-
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-columns: 1fr 4fr;
     height: 100vh;
     grid-template-rows: auto 1fr;
     gap: 1px;
@@ -47,6 +48,7 @@ header {
 
 label {
     font-weight: 600;
+    margin-right: 0.25rem
 }
 
 aside {
@@ -57,17 +59,30 @@ aside {
 }
 
 main {
+    display:grid;
+    grid-template-rows: auto 1fr;
     background-color: blanchedalmond;
+    padding: 0 2rem
+}
+
+#main-first {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    justify-content: space-between;
+}
+
+#mainChangeContent {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0.5rem 1rem
 }
 
-main div {
-    background-color: rgb(122, 197, 172);
+#mainChangeContent div {
+    background-color: #7ac5ac;
     margin-top: 0.33rem;
-    width: 80%;
+    align-self: stretch;
     display: grid;
     grid-template-columns: 1fr auto auto auto auto;
     gap: 0.5rem;
@@ -79,21 +94,26 @@ input, select, option {
     background-color: aliceblue;
 }
 
-button[type="submit"] {
-    background-color: rgb(248, 227, 201);
+button {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    border: 0;
     font-weight: 600;   
+}
+
+
+button[type="submit"] {
+    background-color: rgb(248, 227, 201);
+    border: 0;
+    margin-top: 1rem;
+    width: 80%;
+    place-self: center;
 }
 
 aside button {
     margin: 0.5rem 0;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
     border: 2px solid #000;
-    border-radius: 0.5rem;
     width: 90%;
+    overflow-wrap: anywhere;
 }
 
 #projectsListing {
@@ -108,14 +128,9 @@ button:hover {
     cursor: pointer;
 }
 
-#newProjectModal {
-    display: none;
+#newProject {
+    display: flex;
     place-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    border: 2px solid black;
-    border-radius: 1rem;
-    margin-top: 1rem;
 }
 
 input[type=checkbox] {
@@ -135,6 +150,15 @@ cursor:pointer
         -moz-box-shadow: 5px 5px 20px 4px rgba(66, 68, 90, 0.4);
         box-shadow: 5px 5px 20px 4px rgba(66, 68, 90, 0.4);
         animation: fadeIn 0.75s;
+}
+
+#formCloseBtn {
+    height: 30px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    border: 1px solid black;
+    padding: 0
 }
 
 @keyframes fadeIn {
