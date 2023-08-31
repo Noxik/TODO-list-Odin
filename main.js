@@ -12,15 +12,40 @@ const newProjectNameInput = document.getElementById("newProjectName")
 const selectProject = document.getElementById("project")
 const asideProjectListing = document.querySelector("#projectsListing")
 let projectNameHeading = document.getElementById("actualProject")
+const mainContainer = document.querySelector(".container")
+
+function closeModalOutside() {
+        // add event which close Form after click outside it   
+        document.onclick = function(e){
+            if (!newTaskModal.contains(e.target)) {
+               newTaskModal.style.display = 'none';   
+            }
+                      
+            if (e.target.id === "addTask") {
+                newTaskModal.style.display = "block"
+                }
+        
+            // after click outside form background is visible and inputs clear - so it works like press X button
+            if (newTaskModal.style.display == "none") {
+                mainContainer.style.cssText = ""
+                cleaningModalInputs()
+                } 
+            };
+}
 
 addNewTaskBtn.addEventListener("click", () => {
+    /*blur background */
+    mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
     newTaskModal.style.display = "block";
+    closeModalOutside()
+ 
 })
 
 /* Form closing after button X click */
 document.getElementById("formCloseBtn").addEventListener("click", () => {
     cleaningModalInputs();
     newTaskModal.style.display = "none"
+    mainContainer.style.cssText = ""
 })
 
 
@@ -65,6 +90,7 @@ function switchDone() {
 }
 
 submitNewTaskBtn.addEventListener("click", () => {
+    mainContainer.style.cssText = ""
     addNewTask();
     createAsideBtn();
     addToMain(todoList[todoList.length-1]);
@@ -76,7 +102,9 @@ submitNewTaskBtn.addEventListener("click", () => {
 function cleaningModalInputs() {
     let modal = document.getElementById("newTaskModal")
     let inputs = modal.querySelectorAll("input")
+    document.getElementById("desc").value = ""
     for (let input in inputs) {inputs[input].value = ""}
+
 }
 
 submitNewProject.addEventListener("click", () => {
@@ -200,6 +228,7 @@ function fakeAsideProjectAddBtn() {
 // change description to textarea and update cleaning function
 // DONE add button in task modal to delete project
 // validation if project exist already
+// add onclick modal close
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", () => {
