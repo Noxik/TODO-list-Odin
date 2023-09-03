@@ -5,3 +5,4 @@ In this project i learned:
 3) how can i filter data from arrays and objects (to display specified data on webpage)
 4) practise more how to use functions with argument
 5) practise more how to find correct object in array using findIndex (on project names) and boolean (on project titles)
+6) first time i used local storage to save information! (i add variable to check if darkmode was active and safe my To Do Object list JSON)

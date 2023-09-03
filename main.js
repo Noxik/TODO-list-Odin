@@ -14,6 +14,40 @@ const asideProjectListing = document.querySelector("#projectsListing")
 let projectNameHeading = document.getElementById("actualProject")
 const mainContainer = document.querySelector(".container")
 
+/* STORAGE */
+function storageAvailable(type) {
+    let storage;
+    try {
+      storage = window[type];
+      const x = "__storage_test__";
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch (e) {
+      return (
+        e instanceof DOMException &&
+        // everything except Firefox
+        (e.code === 22 ||
+          // Firefox
+          e.code === 1014 ||
+          // test name field too, because code might not be present
+          // everything except Firefox
+          e.name === "QuotaExceededError" ||
+          // Firefox
+          e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+        // acknowledge QuotaExceededError only if there's something already stored
+        storage &&
+        storage.length !== 0
+      );
+    }
+  }
+
+  if (storageAvailable("localStorage")) {
+  //  console.log("tak")
+  } else {
+  //  console.log("nie")
+  }
+
 function closeModalOutside() {
         // add event which close Form after click outside it   
         document.onclick = function(e){
@@ -38,7 +72,6 @@ addNewTaskBtn.addEventListener("click", () => {
     mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
     newTaskModal.style.display = "block";
     closeModalOutside()
- 
 })
 
 /* Form closing after button X click */
@@ -47,7 +80,6 @@ document.getElementById("formCloseBtn").addEventListener("click", () => {
     newTaskModal.style.display = "none"
     mainContainer.style.cssText = ""
 })
-
 
 let todoList = []
 
@@ -96,7 +128,10 @@ submitNewTaskBtn.addEventListener("click", () => {
     addToMain(todoList[todoList.length-1]);
     addEventsToAsideButtons();
     cleaningModalInputs();
-    newTaskModal.style.display = "none"
+    newTaskModal.style.display = "none";
+    
+    // update local storage
+    localStorage.setItem("todos", JSON.stringify(todoList))
 })
 
 function cleaningModalInputs() {
@@ -140,9 +175,11 @@ function createAsideBtn() {
     // if not button will appear
     _projectNames.forEach((name) => {    
     addNewHtmlTag("button", name);
-    })
+    }) 
  }
 
+
+ 
  //adding Event listener to aside buttons and it return button text content which is equal to project name => use in filtered to show only choose project :)
 function addEventsToAsideButtons() {
     let _proBtn = document.querySelectorAll(".projectBtn")
@@ -228,75 +265,124 @@ function fakeAsideProjectAddBtn() {
 // change description to textarea and update cleaning function
 // DONE add button in task modal to delete project
 // validation if project exist already
-// add onclick modal close
+// DONE: add onclick modal close
+// DONE: easy darkmode localstorage memory
+// DONE: save//load todo from localstorage
+// add button to edit or delete task
+// add button to edit or delete projects
+
 
 //Darkmode switch
-document.getElementById("darkmode").addEventListener("click", () => {
+document.getElementById("darkmode").addEventListener("click", darkMode);
+
+function darkMode() {
     if (document.getElementById("darkmode").checked === true) {    
-      //background + font
-      document.querySelector("body").style = "background-color: #1c2225; color: #FFFFFF";     
-      //buttons
-        for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
-          document.querySelectorAll(".btn")[i].style = "background-color: #46424f; color: #FFFFFF"
-          }
-    } else {
-    //RETURN TO DEFAULT
-      //background + font
-      document.querySelector("body").style = "background-color: #5bcaf5; color: #000"     
-      //buttons
-     for (let i=0; i<document.querySelectorAll(".btn").length; i++) {
-      document.querySelectorAll(".btn")[i].style = "background-color: #ffea8c; color: #000"
+        //background + font
+        document.querySelector("body").style.color = "#e7e7e7" 
+        document.querySelector("header").style.backgroundColor = "#000000"
+        document.querySelector("aside").style.backgroundColor = "#212121"
+        document.querySelector("main").style.backgroundColor = "#757575"
+        document.querySelector("#newTaskModal").style.backgroundColor = "#4a6364"
+        
+      localStorage.setItem("dark", document.getElementById("darkmode").checked)
+      
+  } else {
+      //RETURN TO DEFAULT
+        //background + font
+        document.querySelector("body").style.color = "" 
+        document.querySelector("header").style.backgroundColor = "#10ddc2"
+        document.querySelector("aside").style.backgroundColor = "#15b7b9"
+        document.querySelector("main").style.backgroundColor = "#f5f5f5"
+        document.querySelector("#newTaskModal").style.backgroundColor = "#0dd9e5"   
+       
+        localStorage.setItem("dark", document.getElementById("darkmode").checked)
+        
       }
-    }
-  })
+}
+
+function addOptionToSelect(xxx) {
+    //    console.log(xxx)
+    //    console.log(todoList)
+    //    if (todoList.some(e => e.project === xxx)) {console.log("is already")} else {
+        let option = document.createElement("option");
+        option.value = xxx
+        option.textContent = xxx
+       // new option will be selected as default
+        option.selected = true;
+        selectProject.appendChild(option)}
+    // }
 
 
 // TEST Projects
-const x = (function testing() {
-        todoList.push(new Task("Project test 1","x1","b",1,"low","no"))
-        createAsideBtn();
-        addToMain(todoList[todoList.length-1]);
-        addEventsToAsideButtons()
-        addOptionToSelect(todoList[todoList.length-1].project)
-    })()
-
-function addOptionToSelect(xxx) {
-//    console.log(xxx)
-//    console.log(todoList)
-//    if (todoList.some(e => e.project === xxx)) {console.log("is already")} else {
-    let option = document.createElement("option");
-    option.value = xxx
-    option.textContent = xxx
-   // new option will be selected as default
-    option.selected = true;
-    selectProject.appendChild(option)}
-// }
-
-const xx= (function testing() {
-        todoList.push(new Task("Project test 1","x2","e",2,"mid","no"))
-        createAsideBtn();
-        addToMain(todoList[todoList.length-1]);
-        addEventsToAsideButtons()
-    })()
-        
-const xxx= (function testing() {
-        todoList.push(new Task("Project test 1","x3","g",3,"mid","no"))
-        createAsideBtn();
-        addToMain(todoList[todoList.length-1]);
-        addEventsToAsideButtons()
+function createTestProjects(){
+    const x = (function testing() {
+            todoList.push(new Task("Project test 1","x1","b",1,"low","no"))
+            createAsideBtn();
+            addToMain(todoList[todoList.length-1]);
+            addEventsToAsideButtons()
+            addOptionToSelect(todoList[todoList.length-1].project)
         })()
 
-const y = (function testing() {
-        todoList.push(new Task("Project test 2","y1","b",1,"mid","no"))
-        createAsideBtn();
-        addToMain(todoList[todoList.length-1]);
-        addEventsToAsideButtons();
-        addOptionToSelect(todoList[todoList.length-1].project)
+    const xx= (function testing() {
+            todoList.push(new Task("Project test 1","x2","e",2,"mid","no"))
+            createAsideBtn();
+            addToMain(todoList[todoList.length-1]);
+            addEventsToAsideButtons()
         })()
             
-const yy = (function testing() {
-        todoList.push(new Task("Project test 2","y2","d",2,"high","no"))
-        createAsideBtn();
-        addToMain(todoList[todoList.length-1]);
-        addEventsToAsideButtons()        
-        })()
+    const xxx= (function testing() {
+            todoList.push(new Task("Project test 1","x3","g",3,"mid","no"))
+            createAsideBtn();
+            addToMain(todoList[todoList.length-1]);
+            addEventsToAsideButtons()
+            })()
+
+    const y = (function testing() {
+            todoList.push(new Task("Project test 2","y1","b",1,"mid","no"))
+            createAsideBtn();
+            addToMain(todoList[todoList.length-1]);
+            addEventsToAsideButtons();
+            addOptionToSelect(todoList[todoList.length-1].project)
+            })()
+                
+    const yy = (function testing() {
+            todoList.push(new Task("Project test 2","y2","d",2,"high","no"))
+            createAsideBtn();
+            addToMain(todoList[todoList.length-1]);
+            addEventsToAsideButtons()        
+            })()
+}
+
+    
+// FROM LOCAL STORAGE
+if (localStorage.dark) {
+    if (localStorage.dark === "true") {
+       document.getElementById("darkmode").checked = true;
+       darkMode()}        
+    } else {
+        localStorage.setItem("dark", document.getElementById("darkmode").checked)
+}        
+
+if (!localStorage.todos) {
+    createTestProjects()
+} else {
+    todoList = JSON.parse(localStorage.todos);
+    createAsideBtn();
+    addEventsToAsideButtons();
+
+    let projekty = document.querySelectorAll(".projectBtn")
+    
+    projekty.forEach((e) => {
+        let option = document.createElement("option");
+        option.value = e.textContent;
+        option.textContent = e.textContent;
+        selectProject.appendChild(option)
+    })
+
+    projectNameHeading.textContent = allTaskBtn.textContent
+    todoList.forEach((project) => addToMain(project))
+
+}
+
+
+// localStorage.setItem("todos", JSON.stringify(todoList))
