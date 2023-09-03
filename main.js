@@ -125,7 +125,11 @@ submitNewTaskBtn.addEventListener("click", () => {
     mainContainer.style.cssText = ""
     addNewTask();
     createAsideBtn();
-    addToMain(todoList[todoList.length-1]);
+    
+    // validation if added task fit displayed project tasks in Main
+    if (todoList[todoList.length-1].project === projectNameHeading.textContent) {
+    addToMain(todoList[todoList.length-1]);}
+    
     addEventsToAsideButtons();
     cleaningModalInputs();
     newTaskModal.style.display = "none";
@@ -143,15 +147,17 @@ function cleaningModalInputs() {
 }
 
 submitNewProject.addEventListener("click", () => {
+    //validation to check if project exist
+    if (!todoList.some((e) => e.project === newProjectNameInput.value)) {
     let option = document.createElement("option");
     option.value = newProjectNameInput.value
     option.textContent = newProjectNameInput.value
    // new option will be selected as default
     option.selected = true;
     selectProject.appendChild(option)
-    //cleaning inputs
-    // newProjectNameInput.value = ""
-    createAsideBtn()
+    } else {
+        alert("Your TO DO LIST have project with the same name already!!")
+        }
 })
 
 function addNewHtmlTag(tag, text) {
@@ -178,8 +184,6 @@ function createAsideBtn() {
     }) 
  }
 
-
- 
  //adding Event listener to aside buttons and it return button text content which is equal to project name => use in filtered to show only choose project :)
 function addEventsToAsideButtons() {
     let _proBtn = document.querySelectorAll(".projectBtn")
@@ -257,14 +261,12 @@ function fakeAsideProjectAddBtn() {
 // TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
 // DONE: to add test project to options
-// Need to add in submit new task check if project name is the same as clicked because without that it will show new task to many project which is actual in main section
-// CONSIDER TO ADD PROJECT BUTTON AFTER ADDING NEW PROJECT TO NAVBAR
-// add check if project already exist
-// add dark mode switch function
+// DONE: to add in submit new task check if project name is the same as clicked because without that it will show new task to many project which is actual in main section
+// DONE: add dark mode switch function
 // DONE: add button to add project in new task modal
-// change description to textarea and update cleaning function
+// DONE: change description to textarea and update cleaning function
 // DONE add button in task modal to delete project
-// validation if project exist already
+// DONE: validation if project exist already
 // DONE: add onclick modal close
 // DONE: easy darkmode localstorage memory
 // DONE: save//load todo from localstorage
