@@ -1,11 +1,10 @@
-// DOM:
-// buttons
+// DOM - buttons
 const allTaskBtn = document.getElementById("all")
 const addNewTaskBtn = document.getElementById("addTask")
 const submitNewProject = document.getElementById("newNameSubmit")
 const submitNewTaskBtn = document.getElementById("submit")
 
-// divs
+// DOM - divs
 const main = document.querySelector("#mainChangeContent")
 const newTaskModal = document.getElementById("newTaskModal")
 const newProjectNameInput = document.getElementById("newProjectName")
@@ -13,40 +12,6 @@ const selectProject = document.getElementById("project")
 const asideProjectListing = document.querySelector("#projectsListing")
 let projectNameHeading = document.getElementById("actualProject")
 const mainContainer = document.querySelector(".container")
-
-/* STORAGE */
-function storageAvailable(type) {
-    let storage;
-    try {
-      storage = window[type];
-      const x = "__storage_test__";
-      storage.setItem(x, x);
-      storage.removeItem(x);
-      return true;
-    } catch (e) {
-      return (
-        e instanceof DOMException &&
-        // everything except Firefox
-        (e.code === 22 ||
-          // Firefox
-          e.code === 1014 ||
-          // test name field too, because code might not be present
-          // everything except Firefox
-          e.name === "QuotaExceededError" ||
-          // Firefox
-          e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
-        // acknowledge QuotaExceededError only if there's something already stored
-        storage &&
-        storage.length !== 0
-      );
-    }
-  }
-
-  if (storageAvailable("localStorage")) {
-  //  console.log("tak")
-  } else {
-  //  console.log("nie")
-  }
 
 function closeModalOutside() {
         // add event which close Form after click outside it   
@@ -71,8 +36,30 @@ addNewTaskBtn.addEventListener("click", () => {
     /*blur background */
     mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
     newTaskModal.style.display = "block";
-    closeModalOutside()
+    closeModalOutside();
+    validationTask()
 })
+
+ //validation for checking if task exist in selected project
+function validationTask() {
+    let titleInput = document.getElementById("title")
+    titleInput.addEventListener("focusout", function() {
+        
+        let _chosenProjectInModal = document.querySelector("select").value;
+        let _filteredProjects = todoList.filter(function(e) {
+            if (e.project === _chosenProjectInModal) {
+                return true}})
+    if (_filteredProjects.some((e) => e.title === titleInput.value)) {
+        alert("task with the same title already exist in chosen project!");
+        titleInput.style.cssText = "border: 1px solid #eb2b2b";
+        titleInput.value = "change title!"
+        submitNewTaskBtn.disabled = true;
+    } else {
+        titleInput.style.cssText = "border: 1px solid #111010";
+        submitNewTaskBtn.disabled = false;
+    }})
+}
+
 
 /* Form closing after button X click */
 document.getElementById("formCloseBtn").addEventListener("click", () => {
@@ -122,7 +109,7 @@ function switchDone() {
 }
 
 submitNewTaskBtn.addEventListener("click", () => {
-    mainContainer.style.cssText = ""
+    mainContainer.style.cssText = "" 
     addNewTask();
     createAsideBtn();
     
@@ -133,9 +120,10 @@ submitNewTaskBtn.addEventListener("click", () => {
     addEventsToAsideButtons();
     cleaningModalInputs();
     newTaskModal.style.display = "none";
-    
+    document.getElementById("title").style.cssText = "border: 1px solid #111010;"
     // update local storage
     localStorage.setItem("todos", JSON.stringify(todoList))
+        
 })
 
 function cleaningModalInputs() {
@@ -246,7 +234,8 @@ allTaskBtn.addEventListener("click", () => {
     main.textContent= ""
     projectNameHeading.textContent = allTaskBtn.textContent
     todoList.forEach((project) => addToMain(project))})
-    
+
+    /*
 function fakeAsideProjectAddBtn() {
         todoList.push(new Task("test",1,1,1,1, "no"))
         let option = document.createElement("option");
@@ -257,6 +246,7 @@ function fakeAsideProjectAddBtn() {
         addEventsToAsideButtons()
         todoList.pop()
 }
+*/
 
 // TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
@@ -267,12 +257,15 @@ function fakeAsideProjectAddBtn() {
 // DONE: change description to textarea and update cleaning function
 // DONE add button in task modal to delete project
 // DONE: validation if project exist already
+// DONE: validation if title in chosen project exist already
 // DONE: add onclick modal close
 // DONE: easy darkmode localstorage memory
 // DONE: save//load todo from localstorage
 // add button to edit or delete task
 // add button to edit or delete projects
-
+// make chunks with webpack
+// import date functions
+//add validation in modal = no empty spaces!
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", darkMode);
@@ -388,3 +381,37 @@ if (!localStorage.todos) {
 
 
 // localStorage.setItem("todos", JSON.stringify(todoList))
+
+/* STORAGE TEST */
+function storageAvailable(type) {
+    let storage;
+    try {
+      storage = window[type];
+      const x = "__storage_test__";
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch (e) {
+      return (
+        e instanceof DOMException &&
+        // everything except Firefox
+        (e.code === 22 ||
+          // Firefox
+          e.code === 1014 ||
+          // test name field too, because code might not be present
+          // everything except Firefox
+          e.name === "QuotaExceededError" ||
+          // Firefox
+          e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
+        // acknowledge QuotaExceededError only if there's something already stored
+        storage &&
+        storage.length !== 0
+      );
+    }
+  }
+
+  if (storageAvailable("localStorage")) {
+  //  console.log("tak")
+  } else {
+  //  console.log("nie")
+  }
