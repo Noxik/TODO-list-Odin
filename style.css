@@ -72,6 +72,18 @@ main {
     justify-content: space-between;
 }
 
+#main-first div {
+    display:flex
+}
+
+#editProjectName {
+    margin-left: 1rem
+}
+
+#editProjectName, #deleteProject {
+    display: none
+}
+
 #mainChangeContent {
     display: flex;
     flex-direction: column;

@@ -1,8 +1,10 @@
 // DOM - buttons
 const allTaskBtn = document.getElementById("all")
 const addNewTaskBtn = document.getElementById("addTask")
-const submitNewProject = document.getElementById("newNameSubmit")
+const submitNewProjectBtn = document.getElementById("newNameSubmit")
 const submitNewTaskBtn = document.getElementById("submit")
+const editProjectNameBtn = document.getElementById("editProjectName")
+const deleteProjectBtn  = document.getElementById("deleteProject")
 
 // DOM - divs
 const main = document.querySelector("#mainChangeContent")
@@ -12,6 +14,11 @@ const selectProject = document.getElementById("project")
 const asideProjectListing = document.querySelector("#projectsListing")
 let projectNameHeading = document.getElementById("actualProject")
 const mainContainer = document.querySelector(".container")
+
+if (actualProject === "All Tasks") {
+    editProjectNameBtn.style.display = "none";
+    deleteProjectBtn.style.display = "none";
+}
 
 function closeModalOutside() {
         // add event which close Form after click outside it   
@@ -134,7 +141,7 @@ function cleaningModalInputs() {
 
 }
 
-submitNewProject.addEventListener("click", () => {
+submitNewProjectBtn.addEventListener("click", () => {
     //validation to check if project exist
     if (!todoList.some((e) => e.project === newProjectNameInput.value)) {
     let option = document.createElement("option");
@@ -227,13 +234,75 @@ function addToMain(xxx) {
         }
 
         }
+
+        visibleProjectBtn()
     return main.appendChild(div)
     }
 
 allTaskBtn.addEventListener("click", () => {
-    main.textContent= ""
+    main.textContent= "";
+    visibleProjectBtn();
     projectNameHeading.textContent = allTaskBtn.textContent
     todoList.forEach((project) => addToMain(project))})
+
+function visibleProjectBtn() {
+    if (actualProject.textContent === "All Tasks") {
+        editProjectNameBtn.style.display = "none";
+        deleteProjectBtn.style.display = "none";
+    } else {
+    editProjectNameBtn.style.display = "block";
+    deleteProjectBtn.style.display = "block";
+}
+}
+
+editProjectNameBtn.addEventListener("click", () => {
+    let newProjectName = prompt("Project new name:");
+    console.log(newProjectName);
+    change(newProjectName)
+})
+
+// change project name from main
+function change(newName) {
+    todoList.forEach((e) => {
+    let name = actualProject.textContent
+    if (e.project === name) {
+        e.project = newName;
+
+        let asideBtn = document.querySelectorAll(".projectBtn")
+        for (let key in asideBtn) {
+            if (actualProject.textContent === asideBtn[key].textContent) {
+                asideBtn[key].textContent = newName
+            }
+            }
+    
+        location.reload();
+        }  
+    });
+    actualProject.textContent = newName;
+    localStorage.setItem("todos", JSON.stringify(todoList))
+}
+
+deleteProjectBtn.addEventListener("click", () => {
+    let confirmation = confirm("Are you sure?!");
+    if (confirmation) {
+        let name = actualProject.textContent;
+        console.log(name)
+        deleteProject(name)
+    }
+})
+
+function deleteProject(projectName) {
+    todoList.forEach(() => {
+        let index = todoList.findIndex((e) => e.project === projectName);
+        console.log(index)
+        if (index !== -1) {
+    todoList.splice(index, 1)}
+    })
+
+    localStorage.setItem("todos", JSON.stringify(todoList))
+    location.reload();
+}
+
 
     /*
 function fakeAsideProjectAddBtn() {
@@ -262,10 +331,11 @@ function fakeAsideProjectAddBtn() {
 // DONE: easy darkmode localstorage memory
 // DONE: save//load todo from localstorage
 // add button to edit or delete task
-// add button to edit or delete projects
+// add button for adding projects
+// DONE: button to edit or delete projects
 // make chunks with webpack
 // import date functions
-//add validation in modal = no empty spaces!
+// add validation in modal = no empty spaces!
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", darkMode);
