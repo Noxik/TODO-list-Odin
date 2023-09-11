@@ -366,7 +366,7 @@ let index = projectIndex(projectName, taskName)
     ))
 
     // ACTIVE SAVE AFTER TESTs
-    //  localStorage.setItem("todos", JSON.stringify(todoList))
+     localStorage.setItem("todos", JSON.stringify(todoList))
 
 }
 
