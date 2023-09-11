@@ -193,31 +193,35 @@ function addEventsToAsideButtons() {
     document.querySelector("#mainChangeContent").textContent= ""
     projectNameHeading.textContent = _filteredTodos[0].project
 
-        _filteredTodos.forEach((project) => addToMain(project))
+        _filteredTodos.forEach((project) => addToMain(project));
+        activateDelBtn()
                 }
             )
         }
 }
 
-function addToMain(xxx) { 
+function addToMain(arg) { 
     let div = document.createElement("div");
     let p = document.createElement("p");
-        for (let key in xxx) {    
+    let button = document.createElement("button");
+    let img = document.createElement("img");
+
+        for (let key in arg) {    
             if (key === "project") {
-            p.textContent = xxx[key]
+            p.textContent = arg[key]
             p.style.display = "none";
             div.appendChild(p)
         } else if (key !== "project" && key !== "done") {   
             let p = document.createElement("p");
-    //   console.log(key, [key], [key].toString())
-            p.textContent = xxx[key]
+
+            p.textContent = arg[key]
             div.appendChild(p)
         } else if (key === "done") {
     //    console.log(lastAddedTask[key])
         let input = document.createElement("input");
         input.setAttribute("type", "checkbox");
     
-            if (xxx[key] === "yes") {
+            if (arg[key] === "yes") {
                 input.checked = true
             } else {
                 input.checked = false
@@ -225,25 +229,36 @@ function addToMain(xxx) {
         div.appendChild(input)
         input.addEventListener("click", switchDone)}
 
-        if (xxx[key] === "low") {
+        if (arg[key] === "low") {
            div.style.backgroundColor = "#a0cbf1"
-        } else if (xxx[key] === "mid") {
+        } else if (arg[key] === "mid") {
             div.style.backgroundColor = "#53aefd"
-        } else if (xxx[key] === "high") {
+        } else if (arg[key] === "high") {
             div.style.backgroundColor = "#3598ef"
         }
 
+        button.textContent = "edit";
+        button.classList.add("editBtn");
+        div.appendChild(button);
+
+        img.setAttribute("src", "delete.svg");
+        img.classList.add("delBtn");
+        div.appendChild(img)
         }
 
-        visibleProjectBtn()
-    return main.appendChild(div)
+        div.classList.add("taskDiv");
+        visibleProjectBtn();
+
+        return main.appendChild(div)
     }
 
 allTaskBtn.addEventListener("click", () => {
     main.textContent= "";
     visibleProjectBtn();
-    projectNameHeading.textContent = allTaskBtn.textContent
-    todoList.forEach((project) => addToMain(project))})
+    projectNameHeading.textContent = allTaskBtn.textContent;
+    todoList.forEach((project) => addToMain(project));
+    activateDelBtn()
+})
 
 function visibleProjectBtn() {
     if (actualProject.textContent === "All Tasks") {
@@ -258,11 +273,11 @@ function visibleProjectBtn() {
 editProjectNameBtn.addEventListener("click", () => {
     let newProjectName = prompt("Project new name:");
     console.log(newProjectName);
-    change(newProjectName)
+    changeProjectName(newProjectName)
 })
 
 // change project name from main
-function change(newName) {
+function changeProjectName(newName) {
     todoList.forEach((e) => {
     let name = actualProject.textContent
     if (e.project === name) {
@@ -301,6 +316,58 @@ function deleteProject(projectName) {
 
     localStorage.setItem("todos", JSON.stringify(todoList))
     location.reload();
+}
+
+const howManyProjectLeft = function(projectName) {
+    let count = 0;
+    for (e in todoList) {
+        if (todoList[e].project === projectName) {
+            count++}
+    }
+    return count
+}
+
+// function which help find correct project/task in todoList - important for Edit/Delete Tasks
+const projectIndex = function(project, title) {
+    const indexObject = todoList.findIndex(key => {
+        // we try to find projects which has the same name as clicked button projectName
+        if (key.project === project) {;
+        // we found project in todoList so now we can delete title with same as clicked button taskName            
+        return key.title === title} 
+    }); 
+    return indexObject
+}
+
+function activateDelBtn() {
+    let all = document.querySelectorAll(".delBtn");
+    all.forEach((e) => e.addEventListener("click", () => {
+    if (confirm("Are you sure?")) {
+    let projectName = e.parentNode.firstChild.textContent;
+    let taskName = e.parentNode.firstChild.nextSibling.textContent;
+//    console.log(projectName, taskName);
+
+let index = projectIndex(projectName, taskName)
+
+//    console.log(indexObject)
+//    console.log(todoList[index].project)
+
+    if (howManyProjectLeft(todoList[index].project) === 1) {
+        if(confirm("Are You sure? It will delete whole Project!!")) {
+            deleteProject(todoList[index].project)
+        }
+    } else {
+        // here we delete task from todoList
+        if (index !== -1) {
+            e.parentNode.remove()
+        todoList.splice(index, 1);
+        } else {console.log("ERROR")}
+        }
+    }}
+    ))
+
+    // ACTIVE SAVE AFTER TESTs
+    //  localStorage.setItem("todos", JSON.stringify(todoList))
+
 }
 
 
@@ -445,8 +512,9 @@ if (!localStorage.todos) {
     })
 
     projectNameHeading.textContent = allTaskBtn.textContent
-    todoList.forEach((project) => addToMain(project))
-
+    todoList.forEach((project) => addToMain(project));
+   
+    activateDelBtn()
 }
 
 
