@@ -39,16 +39,16 @@
     </main>
 </div>
 <div id="newTaskModal">
-    <div id="myForm">
-        <div id="formgrid">
-            <div id="first-row">
+    <div class="myForm">
+        <div class="formgrid">
+            <div class="first-row">
                 <div>
                     <label for="project">Choose Project:</label>
                     <select name="project" id="project"></select>
                 </div>
             </div>     
             <p>or</p>
-                <div id="newProject">
+                <div class="newProject">
                     <label for="newProjectName">Add New:</label><input type="text" id="newProjectName">
                     <button id="newNameSubmit">Add</button>
                 </div>             
@@ -64,7 +64,37 @@
             </div>
                 <button type="submit" id="submit">Add New Task!</button>
             </div>
-        <button class="delBtn" id="formCloseBtn">X</button>
+        <button class="closeBtn" id="formCloseBtn">X</button>
+    </div>
+</div> 
+<div id="editTaskModal">
+    <div class="myForm">
+        <div class="formgrid">
+            <div class="first-row">
+                <div>
+                    <label for="project">Choose Project:</label>
+                    <select name="project" id="projectC"></select>
+                </div>
+            </div>     
+            <p>or</p>
+                <div class="newProject">
+                    <label for="newProjectName">Add New:</label><input type="text" id="newProjectNameC">
+                    <button id="newNameSubmitC">Add</button>
+                </div>             
+            <label for="title">Title</label><input type="text" id="titleC">
+            <label for="desc">Description</label><textarea type="text" id="descC"></textarea>
+            <div>
+                <label for="date">Due Date </label><input type="date" name="date" id="dateC">
+                <label for="prio">Priority</label>
+                    <select name="prio" id="prioC">
+                        <option value="low">Low</option>    
+                        <option value="mid">Mid</option>    
+                        <option value="high">High</option>    
+                    </select>
+            </div>
+                <button type="submit" id="submitC">Edit Task!</button>
+            </div>
+        <button class="closeBtn" id="formCloseBtnC">X</button>
     </div>
 </div> 
 </body>

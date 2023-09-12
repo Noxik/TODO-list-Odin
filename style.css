@@ -7,12 +7,12 @@
     font-family: 'Kanit', sans-serif;
     }
 
-#myForm {
+.myForm {
     display: grid;
     grid-template-columns: 1fr auto
 }
 
-#formgrid {
+.formgrid {
     display: grid;
     gap: 0.5rem
 }
@@ -21,7 +21,7 @@
     font-size: 2rem
 }
 
-#first-row {
+.first-row {
     display: flex;
     justify-content: space-between;
     place-self: stretch;
@@ -142,7 +142,7 @@ button[type="submit"] {
     place-self: center;
 }
 
-#newNameSubmit {
+#newNameSubmit, #newNameSubmitC {
     padding: 0.25rem 0.5rem;
     margin-left: 0.5rem
 }
@@ -166,7 +166,7 @@ button:hover {
     cursor: pointer;
 }
 
-#newProject {
+.newProject {
     display: flex;
     place-items: center;
 }
@@ -175,7 +175,7 @@ input[type=checkbox] {
 cursor:pointer
 }
 
-#newTaskModal {
+#newTaskModal, #editTaskModal {
         display: none;
         position: fixed;
         top: 50%;
@@ -190,7 +190,7 @@ cursor:pointer
         animation: fadeIn 0.75s;
 }
 
-#formCloseBtn {
+#formCloseBtn, #formCloseBtnC {
     height: 30px;
     height: 30px;
     width: 30px;

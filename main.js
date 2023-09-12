@@ -4,16 +4,19 @@ const addNewTaskBtn = document.getElementById("addTask")
 const submitNewProjectBtn = document.getElementById("newNameSubmit")
 const submitNewTaskBtn = document.getElementById("submit")
 const editProjectNameBtn = document.getElementById("editProjectName")
-const deleteProjectBtn  = document.getElementById("deleteProject")
+const deleteProjectBtn  = document.getElementById("deleteProject");
+
 
 // DOM - divs
 const main = document.querySelector("#mainChangeContent")
 const newTaskModal = document.getElementById("newTaskModal")
+const editTaskModal = document.getElementById("editTaskModal")
 const newProjectNameInput = document.getElementById("newProjectName")
 const selectProject = document.getElementById("project")
+const selectProjectC = document.getElementById("projectC");
 const asideProjectListing = document.querySelector("#projectsListing")
 let projectNameHeading = document.getElementById("actualProject")
-const mainContainer = document.querySelector(".container")
+const mainContainer = document.querySelector(".container");
 
 if (actualProject === "All Tasks") {
     editProjectNameBtn.style.display = "none";
@@ -73,6 +76,12 @@ document.getElementById("formCloseBtn").addEventListener("click", () => {
     cleaningModalInputs();
     newTaskModal.style.display = "none"
     mainContainer.style.cssText = ""
+})
+
+document.getElementById("formCloseBtnC").addEventListener("click", () => {
+//    cleaningModalInputs();
+    editTaskModal.style.display = "none"
+//    mainContainer.style.cssText = ""
 })
 
 let todoList = []
@@ -194,7 +203,8 @@ function addEventsToAsideButtons() {
     projectNameHeading.textContent = _filteredTodos[0].project
 
         _filteredTodos.forEach((project) => addToMain(project));
-        activateDelBtn()
+        activateDelBtn();
+        activateEditBtn()
                 }
             )
         }
@@ -257,7 +267,8 @@ allTaskBtn.addEventListener("click", () => {
     visibleProjectBtn();
     projectNameHeading.textContent = allTaskBtn.textContent;
     todoList.forEach((project) => addToMain(project));
-    activateDelBtn()
+    activateDelBtn();
+    activateEditBtn()
 })
 
 function visibleProjectBtn() {
@@ -331,7 +342,7 @@ const howManyProjectLeft = function(projectName) {
 const projectIndex = function(project, title) {
     const indexObject = todoList.findIndex(key => {
         // we try to find projects which has the same name as clicked button projectName
-        if (key.project === project) {;
+        if (key.project === project) {
         // we found project in todoList so now we can delete title with same as clicked button taskName            
         return key.title === title} 
     }); 
@@ -339,17 +350,13 @@ const projectIndex = function(project, title) {
 }
 
 function activateDelBtn() {
-    let all = document.querySelectorAll(".delBtn");
-    all.forEach((e) => e.addEventListener("click", () => {
+    let allDel = document.querySelectorAll(".delBtn");
+    allDel.forEach((e) => e.addEventListener("click", () => {
     if (confirm("Are you sure?")) {
     let projectName = e.parentNode.firstChild.textContent;
     let taskName = e.parentNode.firstChild.nextSibling.textContent;
-//    console.log(projectName, taskName);
 
-let index = projectIndex(projectName, taskName)
-
-//    console.log(indexObject)
-//    console.log(todoList[index].project)
+    let index = projectIndex(projectName, taskName)
 
     if (howManyProjectLeft(todoList[index].project) === 1) {
         if(confirm("Are You sure? It will delete whole Project!!")) {
@@ -367,22 +374,31 @@ let index = projectIndex(projectName, taskName)
 
     // ACTIVE SAVE AFTER TESTs
      localStorage.setItem("todos", JSON.stringify(todoList))
-
 }
 
+function activateEditBtn() {
+    let allEdit = document.querySelectorAll(".editBtn");
+    allEdit.forEach((e) => e.addEventListener("click", () => {
 
-    /*
-function fakeAsideProjectAddBtn() {
-        todoList.push(new Task("test",1,1,1,1, "no"))
-        let option = document.createElement("option");
-        option.value = "test"
-        option.textContent = "test"
-        selectProject.appendChild(option)
-        createAsideBtn();
-        addEventsToAsideButtons()
-        todoList.pop()
+        editTaskModal.style.display = "block"
+
+        let projectName = e.parentNode.firstChild.textContent;
+        let taskName = e.parentNode.firstChild.nextSibling.textContent;
+    
+        let index = projectIndex(projectName, taskName);
+        console.log(todoList[index].project)
+        // set default value of select as clicked parent edit button
+        selectProjectC.value = todoList[index].project
+        
+        //set current data as default for edit modal
+        document.getElementById("titleC").value = todoList[index].title;
+        document.getElementById("descC").value = todoList[index].description;
+        document.getElementById("dateC").value = todoList[index].dueDate;
+        document.getElementById("prioC").value = todoList[index].priority;
+        
+        // NOW I NEED TO SAVE CHANGES AFTER CLICK EDIT TASK - copy from add new task but i need to connect new values with previous todolist index
+    }))
 }
-*/
 
 // TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
@@ -432,7 +448,7 @@ function darkMode() {
       }
 }
 
-function addOptionToSelect(xxx) {
+function addOptionToSelect(xxx, yyy) {
     //    console.log(xxx)
     //    console.log(todoList)
     //    if (todoList.some(e => e.project === xxx)) {console.log("is already")} else {
@@ -441,7 +457,7 @@ function addOptionToSelect(xxx) {
         option.textContent = xxx
        // new option will be selected as default
         option.selected = true;
-        selectProject.appendChild(option)}
+        yyy.appendChild(option)}
     // }
 
 
@@ -452,7 +468,7 @@ function createTestProjects(){
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons()
-            addOptionToSelect(todoList[todoList.length-1].project)
+            addOptionToSelect(todoList[todoList.length-1].project, selectProject)
         })()
 
     const xx= (function testing() {
@@ -474,7 +490,7 @@ function createTestProjects(){
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons();
-            addOptionToSelect(todoList[todoList.length-1].project)
+            addOptionToSelect(todoList[todoList.length-1].project, selectProject)
             })()
                 
     const yy = (function testing() {
@@ -514,7 +530,13 @@ if (!localStorage.todos) {
     projectNameHeading.textContent = allTaskBtn.textContent
     todoList.forEach((project) => addToMain(project));
    
-    activateDelBtn()
+    activateDelBtn();
+    activateEditBtn();
+
+    // add project name to edit modal Select
+ 
+    let asideBtn = document.querySelectorAll(".projectBtn")
+    asideBtn.forEach((element) => addOptionToSelect(element.textContent, selectProjectC))
 }
 
 
