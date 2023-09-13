@@ -3,6 +3,7 @@ const allTaskBtn = document.getElementById("all")
 const addNewTaskBtn = document.getElementById("addTask")
 const submitNewProjectBtn = document.getElementById("newNameSubmit")
 const submitNewTaskBtn = document.getElementById("submit")
+const submitEditTaskBtn = document.getElementById("submitC")
 const editProjectNameBtn = document.getElementById("editProjectName")
 const deleteProjectBtn  = document.getElementById("deleteProject");
 
@@ -15,7 +16,7 @@ const newProjectNameInput = document.getElementById("newProjectName")
 const selectProject = document.getElementById("project")
 const selectProjectC = document.getElementById("projectC");
 const asideProjectListing = document.querySelector("#projectsListing")
-let projectNameHeading = document.getElementById("actualProject")
+let actualProject = document.getElementById("actualProject")
 const mainContainer = document.querySelector(".container");
 
 if (actualProject === "All Tasks") {
@@ -43,30 +44,36 @@ function closeModalOutside() {
 }
 
 addNewTaskBtn.addEventListener("click", () => {
+    //set default Select value equal aside project button name
+    if (actualProject.textContent !== "All Tasks") {
+    document.getElementById("project").value = actualProject.textContent}
+
     /*blur background */
     mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
     newTaskModal.style.display = "block";
     closeModalOutside();
-    validationTask()
+    validationTask("title", "project", submitNewTaskBtn)
 })
 
  //validation for checking if task exist in selected project
-function validationTask() {
-    let titleInput = document.getElementById("title")
+ // add argument to make function flexible for new modal and edit modal
+function validationTask(title, select, submitBtn) {
+    let titleInput = document.getElementById(title)
     titleInput.addEventListener("focusout", function() {
         
-        let _chosenProjectInModal = document.querySelector("select").value;
+        let _chosenProjectInModal = document.getElementById(select).value;
         let _filteredProjects = todoList.filter(function(e) {
             if (e.project === _chosenProjectInModal) {
                 return true}})
     if (_filteredProjects.some((e) => e.title === titleInput.value)) {
         alert("task with the same title already exist in chosen project!");
         titleInput.style.cssText = "border: 1px solid #eb2b2b";
+        console.log("test")
         titleInput.value = "change title!"
-        submitNewTaskBtn.disabled = true;
+        submitBtn.disabled = true;
     } else {
         titleInput.style.cssText = "border: 1px solid #111010";
-        submitNewTaskBtn.disabled = false;
+        submitBtn.disabled = false;
     }})
 }
 
@@ -79,7 +86,7 @@ document.getElementById("formCloseBtn").addEventListener("click", () => {
 })
 
 document.getElementById("formCloseBtnC").addEventListener("click", () => {
-//    cleaningModalInputs();
+ // cleaningModalInputs();
     editTaskModal.style.display = "none"
 //    mainContainer.style.cssText = ""
 })
@@ -130,13 +137,16 @@ submitNewTaskBtn.addEventListener("click", () => {
     createAsideBtn();
     
     // validation if added task fit displayed project tasks in Main
-    if (todoList[todoList.length-1].project === projectNameHeading.textContent) {
+    if (todoList[todoList.length-1].project === actualProject.textContent) {
     addToMain(todoList[todoList.length-1]);}
     
     addEventsToAsideButtons();
     cleaningModalInputs();
     newTaskModal.style.display = "none";
     document.getElementById("title").style.cssText = "border: 1px solid #111010;"
+
+    activateDelBtn();
+        activateEditBtn()
     // update local storage
     localStorage.setItem("todos", JSON.stringify(todoList))
         
@@ -200,7 +210,7 @@ function addEventsToAsideButtons() {
                     })
    //   console.log(test[0].project); 
     document.querySelector("#mainChangeContent").textContent= ""
-    projectNameHeading.textContent = _filteredTodos[0].project
+    actualProject.textContent = _filteredTodos[0].project
 
         _filteredTodos.forEach((project) => addToMain(project));
         activateDelBtn();
@@ -265,7 +275,7 @@ function addToMain(arg) {
 allTaskBtn.addEventListener("click", () => {
     main.textContent= "";
     visibleProjectBtn();
-    projectNameHeading.textContent = allTaskBtn.textContent;
+    actualProject.textContent = allTaskBtn.textContent;
     todoList.forEach((project) => addToMain(project));
     activateDelBtn();
     activateEditBtn()
@@ -283,8 +293,10 @@ function visibleProjectBtn() {
 
 editProjectNameBtn.addEventListener("click", () => {
     let newProjectName = prompt("Project new name:");
+//bug repair - if you click cancel on prompt it crash program
+    if (newProjectName != null) {
     console.log(newProjectName);
-    changeProjectName(newProjectName)
+    changeProjectName(newProjectName)}
 })
 
 // change project name from main
@@ -386,7 +398,7 @@ function activateEditBtn() {
         let taskName = e.parentNode.firstChild.nextSibling.textContent;
     
         let index = projectIndex(projectName, taskName);
-        console.log(todoList[index].project)
+    //    console.log(todoList[index].project)
         // set default value of select as clicked parent edit button
         selectProjectC.value = todoList[index].project
         
@@ -396,9 +408,52 @@ function activateEditBtn() {
         document.getElementById("dateC").value = todoList[index].dueDate;
         document.getElementById("prioC").value = todoList[index].priority;
         
-        // NOW I NEED TO SAVE CHANGES AFTER CLICK EDIT TASK - copy from add new task but i need to connect new values with previous todolist index
+        // making changes and save in localStorage
+        changeTaskData(index, taskName);
     }))
 }
+
+function changeTaskData(index, xxx) {
+    // check if task name isnt actually in chosen project
+ //   console.log(index)
+    validationTask("titleC", "projectC", submitEditTaskBtn)
+    console.log(todoList[index].title, "aa")
+    submitEditTaskBtn.addEventListener("click", () => {
+        console.log(todoList[index].title === xxx, todoList[index].title)
+        if (todoList[index].title === xxx) {
+       
+        todoList[index].project = selectProjectC.value;
+        todoList[index].title = document.getElementById("titleC").value;
+        todoList[index].description = document.getElementById("descC").value;
+        todoList[index].dueDate = document.getElementById("dateC").value;
+        todoList[index].priority = document.getElementById("prioC").value;
+    }
+
+        changeMain(todoList[index].project)
+        //update current view
+        localStorage.setItem("todos", JSON.stringify(todoList));
+        //close modal
+        editTaskModal.style.display = "none";
+    })
+}
+function changeMain(a) {
+main.textContent= "";
+let _filteredTodos = todoList.filter(function(e) {
+    if (e.project === a) 
+    {return true}
+        })
+
+    if (a === actualProject.textContent) {
+       _filteredTodos.forEach((project) => addToMain(project));
+        activateDelBtn();
+        activateEditBtn();
+    } else {
+        main.textContent= "";
+        todoList.forEach((project) => addToMain(project));
+        activateDelBtn();
+     activateEditBtn();
+    }
+} 
 
 // TO DO:
 // DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
@@ -527,7 +582,7 @@ if (!localStorage.todos) {
         selectProject.appendChild(option)
     })
 
-    projectNameHeading.textContent = allTaskBtn.textContent
+    actualProject.textContent = allTaskBtn.textContent
     todoList.forEach((project) => addToMain(project));
    
     activateDelBtn();
