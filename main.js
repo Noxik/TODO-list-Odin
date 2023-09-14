@@ -24,19 +24,19 @@ if (actualProject === "All Tasks") {
     deleteProjectBtn.style.display = "none";
 }
 
-function closeModalOutside() {
+function closeModalOutside(modal, btnText) {
         // add event which close Form after click outside it   
         document.onclick = function(e){
-            if (!newTaskModal.contains(e.target)) {
-               newTaskModal.style.display = 'none';   
+            if (!modal.contains(e.target)) {
+               modal.style.display = 'none';   
             }
                       
-            if (e.target.id === "addTask") {
-                newTaskModal.style.display = "block"
+            if (e.target.textContent === btnText) {
+                modal.style.display = "block"
                 }
         
             // after click outside form background is visible and inputs clear - so it works like press X button
-            if (newTaskModal.style.display == "none") {
+            if (modal.style.display == "none") {
                 mainContainer.style.cssText = ""
                 cleaningModalInputs()
                 } 
@@ -51,7 +51,7 @@ addNewTaskBtn.addEventListener("click", () => {
     /*blur background */
     mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
     newTaskModal.style.display = "block";
-    closeModalOutside();
+    closeModalOutside(newTaskModal, "Add New Task");
     validationTask("title", "project", submitNewTaskBtn)
 })
 
@@ -85,11 +85,7 @@ document.getElementById("formCloseBtn").addEventListener("click", () => {
     mainContainer.style.cssText = ""
 })
 
-document.getElementById("formCloseBtnC").addEventListener("click", () => {
- // cleaningModalInputs();
-    editTaskModal.style.display = "none"
-//    mainContainer.style.cssText = ""
-})
+
 
 let todoList = []
 
@@ -125,13 +121,25 @@ function switchDone() {
     }); 
        
     if (todoList[indexInToDoList].done === "yes") {
-        todoList[indexInToDoList].done = "no"
+        todoList[indexInToDoList].done = "no";
+
+        defineDivColor(this.parentNode.childNodes[4].textContent, this.parentNode)
+        this.parentNode.childNodes[1].style.cssText = "text-decoration: none"
     } else {
-        todoList[indexInToDoList].done = "yes"
+        todoList[indexInToDoList].done = "yes";
+        this.parentNode.style.backgroundColor = "#5ba76f";
+        this.parentNode.childNodes[1].style.cssText = "text-decoration: line-through"
     }
 }
 
 submitNewTaskBtn.addEventListener("click", () => {
+    
+    // validation if all inputs are fill
+    if (document.getElementById("project").value  !== "" &&
+    document.getElementById("title").value !== "" &&
+    document.getElementById("desc").value !== "" && 
+    document.getElementById("date").value !== "") {
+    
     mainContainer.style.cssText = "" 
     addNewTask();
     createAsideBtn();
@@ -146,11 +154,41 @@ submitNewTaskBtn.addEventListener("click", () => {
     document.getElementById("title").style.cssText = "border: 1px solid #111010;"
 
     activateDelBtn();
-        activateEditBtn()
+    activateEditBtn()
+    console.log(todoList[todoList.length-1].project, selectProject)
+    addOptionToSelect(todoList[todoList.length-1].project, selectProjectC)
     // update local storage
-    localStorage.setItem("todos", JSON.stringify(todoList))
+    localStorage.setItem("todos", JSON.stringify(todoList))} 
+    else {
+        changeInputBorderColor("#d91010")
+        alert("You must fill all inputs!");
+        
+    }
         
 })
+
+function changeInputBorderColor(color) {
+    if (document.getElementById("project").value === "") {
+        document.getElementById("project").style.cssText = `border: 2px solid ${color};`} else {
+        document.getElementById("project").style.cssText = "border: 1px solid #111010;" 
+        }
+
+    if (document.getElementById("title").value === "") {
+        document.getElementById("title").style.cssText = `border: 2px solid ${color};`} else {
+        document.getElementById("title").style.cssText = "border: 1px solid #111010;" 
+        }
+    
+    if (document.getElementById("desc").value === "") {
+        document.getElementById("desc").style.cssText = `border: 2px solid ${color};`} else {
+        document.getElementById("desc").style.cssText = "border: 1px solid #111010;" 
+        }
+
+    if (document.getElementById("date").value === "") {
+        document.getElementById("date").style.cssText = `border: 2px solid ${color};`} else {
+        document.getElementById("date").style.cssText = "border: 1px solid #111010;" 
+        }
+}
+
 
 function cleaningModalInputs() {
     let modal = document.getElementById("newTaskModal")
@@ -208,9 +246,12 @@ function addEventsToAsideButtons() {
                 if (e.project === _proBtn[i].textContent) 
                 {return true}
                     })
-   //   console.log(test[0].project); 
+      console.log(_filteredTodos.length); 
     document.querySelector("#mainChangeContent").textContent= ""
-    actualProject.textContent = _filteredTodos[0].project
+    
+    if (_filteredTodos.length != 0) {
+        actualProject.textContent = _filteredTodos[0].project}
+        else {return alert("There is no task in this project. This project will be deleted!")}
 
         _filteredTodos.forEach((project) => addToMain(project));
         activateDelBtn();
@@ -218,6 +259,17 @@ function addEventsToAsideButtons() {
                 }
             )
         }
+}
+
+
+function defineDivColor(arg, div) {
+    if (arg === "low") {
+        div.style.backgroundColor = "#a0cbf1"
+     } else if (arg === "mid") {
+         div.style.backgroundColor = "#53aefd"
+     } else if (arg === "high") {
+         div.style.backgroundColor = "#3598ef"
+     }
 }
 
 function addToMain(arg) { 
@@ -249,6 +301,8 @@ function addToMain(arg) {
         div.appendChild(input)
         input.addEventListener("click", switchDone)}
 
+        defineDivColor(arg[key], div)
+        /*
         if (arg[key] === "low") {
            div.style.backgroundColor = "#a0cbf1"
         } else if (arg[key] === "mid") {
@@ -256,6 +310,10 @@ function addToMain(arg) {
         } else if (arg[key] === "high") {
             div.style.backgroundColor = "#3598ef"
         }
+
+*/
+
+
 
         button.textContent = "edit";
         button.classList.add("editBtn");
@@ -388,11 +446,20 @@ function activateDelBtn() {
      localStorage.setItem("todos", JSON.stringify(todoList))
 }
 
+document.getElementById("formCloseBtnC").addEventListener("click", () => {
+    // cleaningModalInputs();
+       editTaskModal.style.display = "none"
+        mainContainer.style.cssText = ""
+   
+   })
+
+
 function activateEditBtn() {
     let allEdit = document.querySelectorAll(".editBtn");
     allEdit.forEach((e) => e.addEventListener("click", () => {
-
-        editTaskModal.style.display = "block"
+        closeModalOutside(editTaskModal, "edit");
+        editTaskModal.style.display = "block";
+        mainContainer.style.cssText = "position: relative; z-index: -1; filter: blur(10px)"
 
         let projectName = e.parentNode.firstChild.textContent;
         let taskName = e.parentNode.firstChild.nextSibling.textContent;
@@ -401,7 +468,7 @@ function activateEditBtn() {
     //    console.log(todoList[index].project)
         // set default value of select as clicked parent edit button
         selectProjectC.value = todoList[index].project
-        
+
         //set current data as default for edit modal
         document.getElementById("titleC").value = todoList[index].title;
         document.getElementById("descC").value = todoList[index].description;
@@ -409,41 +476,39 @@ function activateEditBtn() {
         document.getElementById("prioC").value = todoList[index].priority;
         
         // making changes and save in localStorage
-        changeTaskData(index, taskName);
+        submitEditTaskBtn.setAttribute("id", index);
+        
     }))
+   
 }
 
-function changeTaskData(index, xxx) {
     // check if task name isnt actually in chosen project
- //   console.log(index)
-    validationTask("titleC", "projectC", submitEditTaskBtn)
-    console.log(todoList[index].title, "aa")
     submitEditTaskBtn.addEventListener("click", () => {
-        console.log(todoList[index].title === xxx, todoList[index].title)
-        if (todoList[index].title === xxx) {
-       
+    validationTask("titleC", "projectC", submitEditTaskBtn)
+    let index = submitEditTaskBtn.id
         todoList[index].project = selectProjectC.value;
         todoList[index].title = document.getElementById("titleC").value;
         todoList[index].description = document.getElementById("descC").value;
         todoList[index].dueDate = document.getElementById("dateC").value;
         todoList[index].priority = document.getElementById("prioC").value;
-    }
+    
 
         changeMain(todoList[index].project)
         //update current view
         localStorage.setItem("todos", JSON.stringify(todoList));
         //close modal
         editTaskModal.style.display = "none";
+        mainContainer.style.cssText = ""
     })
-}
-function changeMain(a) {
+
+function changeMain(task) {
 main.textContent= "";
 let _filteredTodos = todoList.filter(function(e) {
-    if (e.project === a) 
+    if (e.project === task) 
     {return true}
         })
 
-    if (a === actualProject.textContent) {
+    if (task === actualProject.textContent) {
        _filteredTodos.forEach((project) => addToMain(project));
         activateDelBtn();
         activateEditBtn();
@@ -467,13 +532,12 @@ let _filteredTodos = todoList.filter(function(e) {
 // DONE: validation if title in chosen project exist already
 // DONE: add onclick modal close
 // DONE: easy darkmode localstorage memory
-// DONE: save//load todo from localstorage
-// add button to edit or delete task
-// add button for adding projects
+// DONE: button to edit or delete task
+// DONE: button for adding projects
 // DONE: button to edit or delete projects
 // make chunks with webpack
 // import date functions
-// add validation in modal = no empty spaces!
+// DONE: add validation in modal = no empty spaces!
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", darkMode);
@@ -486,7 +550,8 @@ function darkMode() {
         document.querySelector("aside").style.backgroundColor = "#212121"
         document.querySelector("main").style.backgroundColor = "#757575"
         document.querySelector("#newTaskModal").style.backgroundColor = "#4a6364"
-        
+        document.querySelector("#editTaskModal").style.backgroundColor = "#707199"
+
       localStorage.setItem("dark", document.getElementById("darkmode").checked)
       
   } else {
@@ -497,9 +562,9 @@ function darkMode() {
         document.querySelector("aside").style.backgroundColor = "#15b7b9"
         document.querySelector("main").style.backgroundColor = "#f5f5f5"
         document.querySelector("#newTaskModal").style.backgroundColor = "#0dd9e5"   
-       
-        localStorage.setItem("dark", document.getElementById("darkmode").checked)
-        
+        document.querySelector("#editTaskModal").style.backgroundColor = "#adadb1"
+
+        localStorage.setItem("dark", document.getElementById("darkmode").checked)     
       }
 }
 
