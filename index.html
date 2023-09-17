@@ -31,7 +31,20 @@
                 <button id="editProjectName">Edit Name</button>
                 <button id="deleteProject">Delete Project</button>
             </div>
-                
+                <div id="sorting">
+                    <label for="sort">Sort by </label>
+                    <select name="sort" id="sort">
+                        <option value="pnameAZ">Project Name A-Z</option> 
+                        <option value="pnameZA">Project Name Z-A</option>       
+                        <option value="tnameAZ">Task Name A-Z</option>    
+                        <option value="tnameZA">Task Name Z-A</option>    
+                        <option value="cdate">Closest Date</option>
+                        <option value="fdate">Furthest Date</option>
+                        <option value="hprio">Priority High-Low</option>
+                        <option value="lprio">Priority Low-High</option>
+                    </select>
+                    <input type="submit" value="Sort" id="sortSubmit">
+                </div>
                 <button id="addTask">Add New Task</button> 
         </div>
             <div id="mainChangeContent">    

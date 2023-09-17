@@ -52,6 +52,11 @@ header {
     padding: 0 2rem
 }
 
+#sortSubmit {
+    margin-left: 0.5rem;
+    padding: 0 0.5rem;
+}
+
 label {
     font-weight: 600;
     margin-right: 0.25rem

@@ -6,7 +6,7 @@ const submitNewTaskBtn = document.getElementById("submit")
 const submitEditTaskBtn = document.getElementById("submitC")
 const editProjectNameBtn = document.getElementById("editProjectName")
 const deleteProjectBtn  = document.getElementById("deleteProject");
-
+const sortBtn  = document.getElementById("sortSubmit");
 
 // DOM - divs
 const main = document.querySelector("#mainChangeContent")
@@ -18,6 +18,107 @@ const selectProjectC = document.getElementById("projectC");
 const asideProjectListing = document.querySelector("#projectsListing")
 let actualProject = document.getElementById("actualProject")
 const mainContainer = document.querySelector(".container");
+
+sortBtn.addEventListener("click", () => {sorting(document.getElementById("sort").value)})
+
+
+function sorting(sortby) {
+ //   console.log(;
+    switch(sortby) {
+        case "pnameAZ":
+            todoList  = todoList.sort(function(a,b) {
+                if (a.project > b.project) {return 1; } else {return -1}})
+            break;
+        case "pnameZA":
+            todoList  = todoList.sort(function(a,b) {
+                if (a.project < b.project) {return 1; } else {return -1}})
+            break;
+        case "tnameAZ":
+            todoList  = todoList.sort(function(a,b) {
+                if (a.title > b.title) {return 1; } else {return -1}})
+            break;
+        case "tnameZA":
+            todoList  = todoList.sort(function(a,b) {
+                if (a.title > b.title) {return 1; } else {return -1}})
+            break;
+        case "cdate":
+            todoList.forEach((e) => e.dueDate = Date.parse(e.dueDate))
+            todoList  = todoList.sort(function(a,b) {
+                if (a.dueDate > b.dueDate) {return 1; } else {return -1}})
+            todoList.forEach((e) => { 
+                let dataString = new Date(e.dueDate).toDateString();
+                let data = new Date(dataString)
+              let stringDate = data.getFullYear() + "-" + (data.getMonth()+1) + "-" + data.getDate()
+                    e.dueDate = stringDate
+            })
+            break;
+        case "fdate":
+            todoList.forEach((e) => e.dueDate = Date.parse(e.dueDate))
+            todoList  = todoList.sort(function(a,b) {
+                if (a.dueDate < b.dueDate) {return 1; } else {return -1}})
+            todoList.forEach((e) => { 
+                let dataString = new Date(e.dueDate).toDateString();
+                let data = new Date(dataString)
+              let stringDate = data.getFullYear() + "-" + (data.getMonth()+1) + "-" + data.getDate()
+                    e.dueDate = stringDate
+            })
+            break;
+        case "hprio":
+            todoList.forEach((e) => {
+                if (e.priority === "low") {
+                    e.priority = 3;
+                } else if (e.priority === "mid") {
+                    e.priority = 2;
+                } else if (e.priority === "high") {
+                    e.priority = 1
+                }})
+
+            todoList  = todoList.sort(function(a,b) {
+                if (a.priority > b.priority) {return 1; } else {return -1}})
+
+            todoList.forEach((e) => {
+                if (e.priority === 3) {
+                    e.priority = "low";
+                } else if (e.priority === 2) {
+                    e.priority = "mid";
+                } else if (e.priority === 1) {
+                    e.priority = "high"
+                }})
+            break;
+        case "lprio":
+            todoList.forEach((e) => {
+                if (e.priority === "low") {
+                    e.priority = 3;
+                } else if (e.priority === "mid") {
+                    e.priority = 2;
+                } else if (e.priority === "high") {
+                    e.priority = 1
+                }})
+
+            todoList  = todoList.sort(function(a,b) {
+                if (a.priority < b.priority) {return 1; } else {return -1}})
+
+            todoList.forEach((e) => {
+                if (e.priority === 3) {
+                    e.priority = "low";
+                } else if (e.priority === 2) {
+                    e.priority = "mid";
+                } else if (e.priority === 1) {
+                    e.priority = "high"
+                }})
+            break;
+
+    }
+
+    // addtomain
+    main.textContent= "";
+    visibleProjectBtn();
+    actualProject.textContent = allTaskBtn.textContent;
+    todoList.forEach((project) => addToMain(project));
+    activateDelBtn();
+    activateEditBtn()
+}
+
 
 if (actualProject === "All Tasks") {
     editProjectNameBtn.style.display = "none";
@@ -155,7 +256,7 @@ submitNewTaskBtn.addEventListener("click", () => {
 
     activateDelBtn();
     activateEditBtn()
-    console.log(todoList[todoList.length-1].project, selectProject)
+//    console.log(todoList[todoList.length-1].project, selectProject)
     addOptionToSelect(todoList[todoList.length-1].project, selectProjectC)
     // update local storage
     localStorage.setItem("todos", JSON.stringify(todoList))} 
@@ -246,7 +347,7 @@ function addEventsToAsideButtons() {
                 if (e.project === _proBtn[i].textContent) 
                 {return true}
                     })
-      console.log(_filteredTodos.length); 
+    //  console.log(_filteredTodos.length); 
     document.querySelector("#mainChangeContent").textContent= ""
     
     if (_filteredTodos.length != 0) {
@@ -290,29 +391,29 @@ function addToMain(arg) {
             div.appendChild(p)
         } else if (key === "done") {
     //    console.log(lastAddedTask[key])
-        let input = document.createElement("input");
-        input.setAttribute("type", "checkbox");
-    
-            if (arg[key] === "yes") {
-                input.checked = true
-            } else {
-                input.checked = false
-            }
-        div.appendChild(input)
-        input.addEventListener("click", switchDone)}
+            let input = document.createElement("input");
+            input.setAttribute("type", "checkbox");
+        
+                if (arg[key] === "yes") {
+                    input.checked = true;
+                
 
-        defineDivColor(arg[key], div)
-        /*
-        if (arg[key] === "low") {
-           div.style.backgroundColor = "#a0cbf1"
-        } else if (arg[key] === "mid") {
-            div.style.backgroundColor = "#53aefd"
-        } else if (arg[key] === "high") {
-            div.style.backgroundColor = "#3598ef"
+                } else {
+                    input.checked = false
+                }
+            div.appendChild(input);
+        
+            //check if task is done, if yes change background color 
+            if (input.checked) {
+                input.parentNode.style.backgroundColor = "#5ba76f";
+                input.parentNode.childNodes[1].style.cssText = "text-decoration: line-through"
+            }
+            
+            input.addEventListener("click", switchDone)
         }
 
-*/
-
+       
+        defineDivColor(arg[key], div)
 
 
         button.textContent = "edit";
@@ -353,7 +454,7 @@ editProjectNameBtn.addEventListener("click", () => {
     let newProjectName = prompt("Project new name:");
 //bug repair - if you click cancel on prompt it crash program
     if (newProjectName != null) {
-    console.log(newProjectName);
+//    console.log(newProjectName);
     changeProjectName(newProjectName)}
 })
 
@@ -382,7 +483,7 @@ deleteProjectBtn.addEventListener("click", () => {
     let confirmation = confirm("Are you sure?!");
     if (confirmation) {
         let name = actualProject.textContent;
-        console.log(name)
+    //    console.log(name)
         deleteProject(name)
     }
 })
@@ -390,7 +491,7 @@ deleteProjectBtn.addEventListener("click", () => {
 function deleteProject(projectName) {
     todoList.forEach(() => {
         let index = todoList.findIndex((e) => e.project === projectName);
-        console.log(index)
+    //    console.log(index)
         if (index !== -1) {
     todoList.splice(index, 1)}
     })
@@ -538,6 +639,13 @@ let _filteredTodos = todoList.filter(function(e) {
 // make chunks with webpack
 // import date functions
 // DONE: add validation in modal = no empty spaces!
+/// DONE: add sort all
+// add sort if task complete
+// change addTomain in priority argument - change priority values to 1,2,3 and change sort method
+// add sort only in chosen project!
+// add project name in () after task name?? for sort by project ;)
+// add save after sort?
+
 
 //Darkmode switch
 document.getElementById("darkmode").addEventListener("click", darkMode);

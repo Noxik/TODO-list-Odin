@@ -11,3 +11,5 @@ In this project i learned:
 9) first time i used findIndex method to find all projects with the same name to delete all of them from to do list
 10) i exercised function expression with "return" values
 11) i exercised functions with argument to use them in various situation
+12) first time use sort methods
+13) first time use "new Data", Date.parse() and  toDateString()
