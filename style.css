@@ -7,6 +7,8 @@
     font-family: 'Kanit', sans-serif;
     }
 
+
+
 strong {
     font-size: 1.25rem;
     margin-bottom: 0.5rem
@@ -71,7 +73,7 @@ aside {
 
 main {
     display:grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     background-color: #f5f5f5;
     padding: 0 2rem
 }
@@ -99,22 +101,37 @@ background-color: #ffb254
 }
 
 
-#mainChangeContent {
+#mainChangeContent, #labels {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0.5rem 1rem
 }
 
-#mainChangeContent div {
+#labels {
+    padding: 0 1rem
+}
+
+#labels p {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+#mainChangeContent div, .names {
     margin-top: 0.33rem;
     align-self: stretch;
     display: grid;
-    grid-template-columns: 1fr auto auto auto auto auto auto;
+    grid-template-columns: repeat(4, 2fr) repeat(4, 1fr);
     gap: 0.5rem;
     padding: 0.5rem 2rem;
     border-radius: 0.5rem;
+    place-items: center;
 }
+
+.names {
+    padding: 0 2rem;
+}
+
 
 #mainChangeContent button {
     background-color: #d9d9d9;
@@ -161,7 +178,6 @@ aside button {
     margin: 0.5rem 0;
     border: 2px solid #000;
     width: 90%;
-    overflow-wrap: anywhere;
 }
 
 #projectsListing {

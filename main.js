@@ -377,7 +377,7 @@ function addToMain(arg) {
         for (let key in arg) {    
             if (key === "project") {
             p.textContent = arg[key]
-            p.style.display = "none";
+        //    p.style.display = "none";
             div.appendChild(p)
         } else if (key !== "project" && key !== "done") {   
             let p = document.createElement("p");
