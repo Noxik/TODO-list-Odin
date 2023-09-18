@@ -21,9 +21,7 @@ const mainContainer = document.querySelector(".container");
 
 sortBtn.addEventListener("click", () => {sorting(document.getElementById("sort").value)})
 
-
 function sorting(sortby) {
- //   console.log(;
     switch(sortby) {
         case "pnameAZ":
             todoList  = todoList.sort(function(a,b) {
@@ -107,7 +105,6 @@ function sorting(sortby) {
                     e.priority = "high"
                 }})
             break;
-
     }
 
     // addtomain
@@ -178,15 +175,12 @@ function validationTask(title, select, submitBtn) {
     }})
 }
 
-
 /* Form closing after button X click */
 document.getElementById("formCloseBtn").addEventListener("click", () => {
     cleaningModalInputs();
     newTaskModal.style.display = "none"
     mainContainer.style.cssText = ""
 })
-
-
 
 let todoList = []
 
@@ -355,6 +349,7 @@ function addEventsToAsideButtons() {
         else {return alert("There is no task in this project. This project will be deleted!")}
 
         _filteredTodos.forEach((project) => addToMain(project));
+        document.getElementById("sorting").style.display = "none"
         activateDelBtn();
         activateEditBtn()
                 }
@@ -395,8 +390,7 @@ function addToMain(arg) {
             input.setAttribute("type", "checkbox");
         
                 if (arg[key] === "yes") {
-                    input.checked = true;
-                
+                    input.checked = true;            
 
                 } else {
                     input.checked = false
@@ -411,10 +405,8 @@ function addToMain(arg) {
             
             input.addEventListener("click", switchDone)
         }
-
-       
+      
         defineDivColor(arg[key], div)
-
 
         button.textContent = "edit";
         button.classList.add("editBtn");
@@ -436,6 +428,7 @@ allTaskBtn.addEventListener("click", () => {
     visibleProjectBtn();
     actualProject.textContent = allTaskBtn.textContent;
     todoList.forEach((project) => addToMain(project));
+    document.getElementById("sorting").style.display = "block"
     activateDelBtn();
     activateEditBtn()
 })
@@ -542,7 +535,6 @@ function activateDelBtn() {
         }
     }}
     ))
-
     // ACTIVE SAVE AFTER TESTs
      localStorage.setItem("todos", JSON.stringify(todoList))
 }
@@ -550,10 +542,8 @@ function activateDelBtn() {
 document.getElementById("formCloseBtnC").addEventListener("click", () => {
     // cleaningModalInputs();
        editTaskModal.style.display = "none"
-        mainContainer.style.cssText = ""
-   
+        mainContainer.style.cssText = ""  
    })
-
 
 function activateEditBtn() {
     let allEdit = document.querySelectorAll(".editBtn");
@@ -593,7 +583,6 @@ function activateEditBtn() {
         todoList[index].dueDate = document.getElementById("dateC").value;
         todoList[index].priority = document.getElementById("prioC").value;
     
-
         changeMain(todoList[index].project)
         //update current view
         localStorage.setItem("todos", JSON.stringify(todoList));
@@ -622,24 +611,8 @@ let _filteredTodos = todoList.filter(function(e) {
 } 
 
 // TO DO:
-// DONE: NEXT ADD DISPLAY PROJECT TASK AFTER BUTTON click with filter!:)
-// DONE: to add test project to options
-// DONE: to add in submit new task check if project name is the same as clicked because without that it will show new task to many project which is actual in main section
-// DONE: add dark mode switch function
-// DONE: add button to add project in new task modal
-// DONE: change description to textarea and update cleaning function
-// DONE add button in task modal to delete project
-// DONE: validation if project exist already
-// DONE: validation if title in chosen project exist already
-// DONE: add onclick modal close
-// DONE: easy darkmode localstorage memory
-// DONE: button to edit or delete task
-// DONE: button for adding projects
-// DONE: button to edit or delete projects
 // make chunks with webpack
 // import date functions
-// DONE: add validation in modal = no empty spaces!
-/// DONE: add sort all
 // add sort if task complete
 // change addTomain in priority argument - change priority values to 1,2,3 and change sort method
 // add sort only in chosen project!
@@ -692,7 +665,7 @@ function addOptionToSelect(xxx, yyy) {
 // TEST Projects
 function createTestProjects(){
     const x = (function testing() {
-            todoList.push(new Task("Project test 1","x1","b",1,"low","no"))
+            todoList.push(new Task("Project test 1","test 1-1","abc","2023-09-05","low","no"))
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons()
@@ -700,21 +673,21 @@ function createTestProjects(){
         })()
 
     const xx= (function testing() {
-            todoList.push(new Task("Project test 1","x2","e",2,"mid","no"))
+            todoList.push(new Task("Project test 1","test 1-2","def","2021-01-01","mid","no"))
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons()
         })()
             
     const xxx= (function testing() {
-            todoList.push(new Task("Project test 1","x3","g",3,"mid","no"))
+            todoList.push(new Task("Project test 1","test 1-3","ghi","2022-10-02","low","no"))
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons()
             })()
 
     const y = (function testing() {
-            todoList.push(new Task("Project test 2","y1","b",1,"mid","no"))
+            todoList.push(new Task("Project test 2","test 2-1","abc","2023-09-15","mid","no"))
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons();
@@ -722,7 +695,7 @@ function createTestProjects(){
             })()
                 
     const yy = (function testing() {
-            todoList.push(new Task("Project test 2","y2","d",2,"high","no"))
+            todoList.push(new Task("Project test 2","test 2-2","def","2020-11-25","high","no"))
             createAsideBtn();
             addToMain(todoList[todoList.length-1]);
             addEventsToAsideButtons()        
@@ -741,6 +714,8 @@ if (localStorage.dark) {
 
 if (!localStorage.todos) {
     createTestProjects()
+    activateDelBtn();
+    activateEditBtn();
 } else {
     todoList = JSON.parse(localStorage.todos);
     createAsideBtn();
@@ -766,9 +741,6 @@ if (!localStorage.todos) {
     let asideBtn = document.querySelectorAll(".projectBtn")
     asideBtn.forEach((element) => addOptionToSelect(element.textContent, selectProjectC))
 }
-
-
-// localStorage.setItem("todos", JSON.stringify(todoList))
 
 /* STORAGE TEST */
 function storageAvailable(type) {
