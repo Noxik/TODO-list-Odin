@@ -13,3 +13,5 @@ In this project i learned:
 11) i exercised functions with argument to use them in various situation
 12) first time use sort methods
 13) first time use "new Data", Date.parse() and  toDateString()
+
+ONLY DESKTOP VERSION - demo: https://noxik.github.io/TODO-list-Odin/
